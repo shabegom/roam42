@@ -109,7 +109,9 @@
       });
   };
   roam42.shabegom.getMoon = async () => {
-    const url = await fetch("https://shabegom-roam-helpers.glitch.me/moon");
+    const url = await fetch(
+      "https://shabegom-roam-helpers.glitch.me/moon"
+    ).then(res => res.text());
     return `{{iframe:${url}}}`;
   };
 })();
