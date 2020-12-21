@@ -6,7 +6,7 @@
       (highlight) => `${highlight.text} ([[${highlight.author}]], [[${highlight.title}]])`,
     ))
     .catch((e) => {
-      console.log(e);
+      alert(e);
     });
 
   roam42.shabegom.horoscope = async () => {
@@ -97,5 +97,9 @@
       .catch((e) => {
         roam42.help.displayMessage(`Error!${e}`, 2000);
       });
+  };
+  roam42.shabegom.getMoon = async () => {
+    const url = fetch('https://shabegom-roam-helpers.glitch.me/moon');
+    return `:hiccup [:iframe {:src ${url} :height "400px" :width "80%" :id "moon" :scrolling "no"}]`;
   };
 })();
