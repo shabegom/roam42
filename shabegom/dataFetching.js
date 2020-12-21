@@ -48,14 +48,18 @@
       arr.push(json[i]);
     }
     let books = ["[[Torah]]", "[[Bible]]", "[[Quran]]"];
-    return arr.map((item, i) => {
-      return {
-        title: books[i],
-        original: `${item.textOriginal}`,
-        verse: `> ${item.text}`,
-        meta: `#[[${item.book}]] #${item.chapter}:${item.startVerse}-${item.endVerse} #[[${item.version.name}]]`
-      };
-    });
+    return arr
+      .map((item, i) => {
+        if (item.book) {
+          return {
+            title: books[i],
+            original: `${item.textOriginal}`,
+            verse: `> ${item.text}`,
+            meta: `#[[${item.book}]] #${item.chapter}:${item.startVerse}-${item.endVerse} #[[${item.version.name}]]`
+          };
+        }
+      })
+      .filter(el => el !== null);
   };
 
   roam42.shabegom.randomWiki = async () =>
