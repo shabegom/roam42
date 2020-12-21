@@ -1,6 +1,6 @@
 // data fetching functions
 (() => {
-  roam42.shabegom.fetchReadwise = async () => await fetch('https://readwise-daily.glitch.me/')
+  roam42.shabegom.fetchReadwise = async () => await fetch('https://shabegom-roam-helpers.glitch.me/readwise')
     .then((res) => res.json())
     .then((data) => data.map(
       (highlight) => `${highlight.text} ([[${highlight.author}]], [[${highlight.title}]])`,
@@ -18,7 +18,7 @@
       .then((data) => `> ${data.horoscope}`);
   };
 
-  roam42.shabegom.shakespeare = async () => await fetch('https://shakespeare-quote.glitch.me/')
+  roam42.shabegom.shakespeare = async () => await fetch('https://shabegom-roam-helpers.glitch.me/shakespeare')
     .then((res) => res.json())
     .then(
       (data) => `> ${data.quote} 
