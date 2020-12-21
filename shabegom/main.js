@@ -2,10 +2,22 @@
 
 async function multiSection(title, array) {
   await header(title);
-  array.forEach(async (block) => {
+  array.forEach(async block => {
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block);
   });
   await unTab();
+}
+
+async function bibleVerses(items) {
+  items.forEach(async block => {
+    await header(block.title);
+    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+      block.original
+    );
+    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block.verse);
+    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block.meta);
+    await unTab();
+  });
 }
 
 async function section(title, block) {
@@ -15,20 +27,20 @@ async function section(title, block) {
 }
 
 async function tab() {
-  await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock('');
+  await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock("");
   await roam42.smartBlocks.outputArrayWrite();
   await roam42KeyboardLib.pressTab();
 }
 
 async function unTab() {
-  await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock('');
+  await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock("");
   await roam42.smartBlocks.outputArrayWrite();
   await roam42KeyboardLib.pressShiftTab();
 }
 
 async function header(title) {
   await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(title);
-  await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock('');
+  await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock("");
   await roam42.smartBlocks.outputArrayWrite();
   await roam42KeyboardLib.pressTab();
 }
@@ -40,4 +52,5 @@ async function header(title) {
   roam42.shabegom.multiSection = multiSection;
   roam42.shabegom.tab = tab;
   roam42.shabegom.unTab = unTab;
+  roam42.shabegom.bibleVerses = bibleVerses;
 })();
