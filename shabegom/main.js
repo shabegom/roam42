@@ -11,12 +11,14 @@ async function multiSection(title, array) {
 async function bibleVerses(items) {
   items.forEach(async block => {
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block.title);
+    await roam42.smartBlocks.outputArrayWrite();
     await roam42KeyboardLib.pressTab();
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
       block.original
     );
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block.verse);
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block.meta);
+    await roam42.smartBlocks.outputArrayWrite();
     await roam42KeyboardLib.pressShiftTab();
   });
 }
