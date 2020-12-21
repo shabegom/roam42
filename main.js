@@ -191,6 +191,7 @@ if (typeof window.roam42 === 'undefined') {
 
     // Load in custom Shabegom Stuff
     roam42.loader.addScriptToPage('shabegom', `${roam42.host}shabegom/main.js`);
+    roam42.loader.addScriptToPage('utils', `${roam42.host}shabegom/utils.js`);
     roam42.loader.addScriptToPage(
       'randomWord',
       `${roam42.host}shabegom/randomWord.js`,
