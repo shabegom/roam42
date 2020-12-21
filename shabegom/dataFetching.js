@@ -43,8 +43,12 @@
     let json = await fetch(
       `https://shbgm-cors.glitch.me/https://devotionalium.com/api/v2/?date=${date}`
     ).then(res => res.json());
+    let arr = [];
+    for (i in json) {
+      arr.push(i);
+    }
     let books = ["[[Torah]]", "[[Bible]]", "[[Quran]]"];
-    return json.map((item, i) => {
+    return arr.map((item, i) => {
       return {
         title: books[i],
         original: `${item.textOriginal}`,
