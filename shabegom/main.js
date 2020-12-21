@@ -9,7 +9,7 @@ async function multiSection(title, array) {
 }
 
 async function bibleVerses(items) {
-  items.forEach(async block => {
+  items.map(async block => {
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(block.title);
     await roam42.smartBlocks.outputArrayWrite();
     await roam42KeyboardLib.pressTab();
