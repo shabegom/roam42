@@ -91,39 +91,8 @@ if (typeof window.roam42 === 'undefined') {
     roam42.loader.addScriptToPage('libs', `${roam42.host}dist/libs.js`);
     roam42.loader.addCSSToPage('cssLibs', `${roam42.host}dist/libs.css`);
 
-<<<<<<< HEAD
     //common shared functions
     roam42.loader.addCSSToPage("styleRM", roam42.host + "css/styleRM.css");
-=======
-    // load all 3rd party libraries
-    // roam42.loader.addScriptToPage( 'JQUERY',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js' );
-    // roam42.loader.addScriptToPage( 'JSCOOKIE',         roam42.host + 'dist/jscookie/js.cookie-3.0.0-rc.1.min.js'                                 );
-    // roam42.loader.addScriptToPage( 'MOUSETRAP',        roam42.host + 'dist/mousetrap/mousetrap-1.6.5.min.js' );
-    // roam42.loader.addScriptToPage( 'chrono',           roam42.host + 'dist/chrono/chrono-1.4.8.min.js' );
-    // roam42.loader.addScriptToPage( 'dayjs',            roam42.host + 'dist/dayjs/dayjs.min.js' );
-    // roam42.loader.addScriptToPage( 'jsFlatpickr',      roam42.host + 'dist/flatpickr/flatpickr-4.6.6.min.js' );
-    //   roam42.loader.addCSSToPage( 'cssFlatpckr',      roam42.host + 'dist/flatpickr/flatpickr.min.css' );
-    //   roam42.loader.addCSSToPage( 'cssFlatpckrThme',  roam42.host + 'css/airbnb.css' );
-    // roam42.loader.addScriptToPage( 'jsJsPanel',        roam42.host + 'dist/jspanel/jspanel-4.11.2.min.js' );
-    //   roam42.loader.addCSSToPage( 'cssJsPanel',       roam42.host + 'dist/jspanel/jspanel.min.css' );
-    // roam42.loader.addScriptToPage( 'tributeJS',        roam42.host + 'dist/tribute/tribute.min.js' );
-
-    // Do not load in iframe windows
-    // if( window === window.parent  ){
-    // roam42.loader.addScriptToPage( 'TYPEAHEAD',       roam42.host + 'dist/typeahead/typeahead-0.11.1.bundle.js' );
-    // roam42.loader.addScriptToPage( 'popperjs',        roam42.host + 'dist/popperjs/popperjs-core-2.5.4.js'                                         );
-    // roam42.loader.addScriptToPage( 'tippyjs',         roam42.host + 'dist/tippy/tippy-6.2.7.min.js' );
-    //   roam42.loader.addCSSToPage( 'cssTippyjs',      roam42.host + 'dist/tippy/light-border.css' );
-
-    // roam42.loader.addScriptToPage( 'iziToast',        roam42.host + 'dist/iziToast/iziToast-1.4.0.min.js' );
-    //   roam42.loader.addCSSToPage( 'cssiziToast',     roam42.host + 'dist/iziToast/iziToast.min.css' );
-    //  roam42.loader.addScriptToPage( 'deviceDetection', roam42.host + 'dist/deviceDetection/current-device.min.js' );
-    // roam42.loader.addScriptToPage( 'marked-lib',      roam42.host + 'dist/marked/marked.min.js' ); //https://github.com/markedjs/marked
-    // }
-
-    // common shared functions
-    roam42.loader.addCSSToPage('styleRM', `${roam42.host}css/styleRM.css`);
->>>>>>> move randomword to main.js
     roam42.loader.addScriptToPage(
       'commonFunctions',
       `${roam42.host}common/commonFunctions.js`,
@@ -132,17 +101,8 @@ if (typeof window.roam42 === 'undefined') {
       'commonDatalog',
       `${roam42.host}common/commonDatalog.js  `,
     );
-<<<<<<< HEAD
     roam42.loader.addScriptToPage("settings", roam42.host + "ext/settings.js");
     roam42.loader.addScriptToPage("jumpNav", roam42.host + "ext/jumpNav.js");
-=======
-    roam42.loader.addScriptToPage('settings', `${roam42.host}ext/settings.js`);
-    roam42.loader.addScriptToPage(
-      'keyEvents',
-      `${roam42.host}common/keyevents.js`,
-    );
-    roam42.loader.addScriptToPage('jumpNav', `${roam42.host}ext/jumpNav.js`);
->>>>>>> move randomword to main.js
     roam42.loader.addScriptToPage(
       'message-startup',
       `${roam42.host}common/messages.js`,
@@ -199,6 +159,18 @@ if (typeof window.roam42 === 'undefined') {
     );
     roam42.loader.addScriptToPage('timemgmt', `${roam42.host}ext/timemgmt.js`);
 
+<<<<<<< HEAD
+=======
+    // Load in custom Shabegom Stuff
+    roam42.loader.addScriptToPage('shabegom', `${roam42.host}shabegom/main.js`);
+    roam42.loader.addScriptToPage('utils', `${roam42.host}shabegom/utils.js`);
+    roam42.loader.addScriptToPage(
+      'randomWord',
+      `${roam42.host}shabegom/randomWord.js`,
+    );
+
+    // Do not load in iframe windows
+>>>>>>> add utility functions
     if (window === window.parent) {
       roam42.loader.addScriptToPage(
         'quickReference',
