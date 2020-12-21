@@ -44,7 +44,7 @@
       `https://shbgm-cors.glitch.me/https://devotionalium.com/api/v2/?date=${date}`
     ).then(res => res.json());
       let books = ['[[Torah]]', '[[Bible]]', '[[Quran]]']
-      return json.map(( item, i ) => {title: books[i], original: item.textOriginal verse: `> ${item.text}`, meta: `#[[${item.book}]] #${item.chapter}:${item.startVerse}-${item.endVerse} #[[${item.version.name}]]`
+      return json.map(( item, i ) => {title: books[i], original: item.textOriginal, verse: `> ${item.text}`, meta: `#[[${item.book}]] #${item.chapter}:${item.startVerse}-${item.endVerse} #[[${item.version.name}]]`
 })
   };
 
