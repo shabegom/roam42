@@ -14,8 +14,24 @@ function formatDate() {
 function randomInteger(max) {
   return Math.floor(Math.random() * (max - 0 + 1)) + 0;
 }
+const collectQuotes = async (quotes, page, maxPages, baseUrl) => {
+  if (page > maxPages) {
+    return quotes;
+  }
+  const currentPage = `?page=${page}`;
+  const response = await fetch(baseUrl + currentPage)
+    .then((res) => res.json())
+    .catch((e) => {
+      throw error;
+    });
+  const newMaxPages = response.total_pages <= 5 ? response.total_pages : 5;
+  const nextPage = response.current_page + 1;
+  quotes = quotes.concat(response.quotes);
+  return collectQuotes(quotes, nextPage, maxPages, baseUrl);
+};
 
 (() => {
   roam42.shabegom.formatDate = formatDate;
   roam42.shabegom.randomInteger = randomInteger;
+  roam42.shabegom.collectQuotes = collectQuotes;
 })();
