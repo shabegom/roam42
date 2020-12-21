@@ -105,26 +105,31 @@
       poem[0].content,
     );
 
-    // Pinboard
-    await roam42.shabegom.header('#pinboard');
-
-    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
-      pinboard.page,
-    );
-    // Indent the block below
-    await roam42.shabegom.tab();
-    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
-      pinboard.link,
-    );
-
-    await roam42.shabegom.unTab();
-
     // Read Later Link
     const ref = await roam42.smartBlocks.getRandomBlocksMention('readlater');
     const page = await roam42.common.getPageNamesFromBlockUidList([ref]);
+    await roam42.shabegom.section('Read Me!', `[[${page[0][1].title}]]`);
+
+    // Pinboard
+    await roam42.shabegom.header('#pinboard');
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
-      `[[${page[0][1].title}]]`,
+      pinboard.page,
     );
     await roam42.smartBlocks.outputArrayWrite();
+    await roam42.common.sleep(1000);
+    // Indent the block below
+    await roam42.common.navigateUiTo(pinboard.rawPage);
+    await roam42.common.sleep(1000);
+    await roam42.common.simulateMouseClick(
+      document.getElementById('block-input-ghost'),
+    );
+    await roam42.common.sleep(1000);
+    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+      pinboard.link,
+    );
+    await roam42.smartBlocks.outputArrayWrite();
+    await roam42.common.sleep(1000);
+    await roam42KeyboardLib.pressEsc();
+    await window.history.back();
   };
 })();
