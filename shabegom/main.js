@@ -10,7 +10,7 @@ async function multiSection(title, array) {
 
 async function bibleVerses(items) {
   items.forEach(async block => {
-    multiSection(block.title, [block.original, block.verse, block.meta]);
+    await multiSection(block.title, [block.original, block.verse, block.meta]);
   });
 }
 
