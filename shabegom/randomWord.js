@@ -1957,5 +1957,5 @@
   ];
 
   // random word
-  window.shabegom.word = () => wordList[randomInteger(wordList.length - 1)];
+  roam42.shabegom.word = () => wordList[randomInteger(wordList.length - 1)];
 })();
