@@ -59,7 +59,7 @@
           };
         }
       })
-      .filter(el => el !== null);
+      .filter(el => el !== undefined);
   };
 
   roam42.shabegom.randomWiki = async () =>
