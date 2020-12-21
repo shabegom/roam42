@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,node
 
+package.json
+
+
 ### macOS ###
 # General
 .DS_Store
@@ -139,7 +142,7 @@ dist
 # TernJS port file
 .tern-port
 
+# End of https://www.toptal.com/developers/gitignore/api/macos,node
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,node
