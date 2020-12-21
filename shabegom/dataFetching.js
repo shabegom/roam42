@@ -20,8 +20,10 @@
 
   roam42.shabegom.shakespeare = async () => await fetch('https://shakespeare-quote.glitch.me/')
     .then((res) => res.json())
-    .then((data) => `> ${data.quote} 
-\t— [[${data.play}]]`);
+    .then(
+      (data) => `> ${data.quote} 
+\t— [[${data.play}]]`,
+    );
 
   roam42.shabegom.stoic = async () => await fetch(
     'https://shbgm-cors.glitch.me/' + 'https://stoic-quotes.com/api/quote',
@@ -42,27 +44,29 @@
   )
     .then((res) => res.json())
     .then((data) => data.query.random[0].title)
-    .then(async (title) => await fetch(
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURI(
-        title,
-      )}`,
-    ).then((res) => res.json()));
+    .then(
+      async (title) => await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURI(
+          title,
+        )}`,
+      ).then((res) => res.json()),
+    );
 
   roam42.shabegom.poem = async () => await fetch('https://www.poemist.com/api/v1/randompoems')
     .then((r) => r.json())
     .catch((e) => alert(e));
 
-  roam42.shabegom.buddha = async () => {
-    const baseUrl = 'https://goodquotesapi.herokuapp.com/author/gautama+buddha';
+  roam42.shabegom.quote = async (type, searchTerm) => {
+    const baseUrl = `https://goodquotesapi.herokuapp.com/${type}/${searchTerm}`;
     const quotes = await collectQuotes([], 1, 5, baseUrl);
-    return quotes[randomInteger(quotes.length - 1)];
-  };
-
-  roam42.shabegom.quote = async () => {
-    const tag = shabegom.word();
-    const baseUrl = `https://goodquotesapi.herokuapp.com/title/${tag}`;
-    const quotes = await collectQuotes([], 1, 5, baseUrl);
-    return quotes[randomInteger(quotes.length - 1)];
+    const quote = quotes[randomInteger(quotes.length - 1)];
+    let source;
+    if (quote.publication) {
+      source = `- [[${quote.publication}]] – [[${quote.author}]]`;
+    } else {
+      source = `- [[${quote.author}]]`;
+    }
+    return { quote: quote.quote, source };
   };
 
   roam42.shabegom.pinboard = async () => await fetch(
