@@ -65,7 +65,7 @@
     return quotes[randomInteger(quotes.length - 1)];
   };
 
-  roam42.shabegom.pinboard = async () => await fetch(
+  roam42.shabegom.pinboard = async (num = 1) => await fetch(
     'https://shbgm-cors.glitch.me/https://api.pinboard.in/v1/posts/recent?auth_token=sbgood:ee4aaf2efcd6c712c5f4&count=1&format=json&toread=yes',
   )
     .then((res) => res.json())
@@ -80,7 +80,8 @@
         });
       const page = `[[${data.posts[0].description}]]`;
       const link = `[${data.posts[0].description}](${data.posts[0].href}) #readlater`;
-      return { page, link };
+      const rawPage = data.posts[0].description;
+      return { page, link, rawPage };
     });
 
   roam42.shabegom.pbMarkRead = async () => {
