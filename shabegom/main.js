@@ -19,7 +19,7 @@ async function bibleVerses(block) {
     block[1].verse,
     block[1].meta
   ]);
-  await MultiSection(block[2].title, [
+  await multiSection(block[2].title, [
     block[2].original,
     block[2].verse,
     block[2].meta
