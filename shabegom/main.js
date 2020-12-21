@@ -8,10 +8,22 @@ async function multiSection(title, array) {
   await unTab();
 }
 
-async function bibleVerses(items) {
-  items.forEach(async block => {
-    await multiSection(block.title, [block.original, block.verse, block.meta]);
-  });
+async function bibleVerses(block) {
+  await section(block[0].title, [
+    block[0].original,
+    block[0].verse,
+    block[0].meta
+  ]);
+  await section(block[1].title, [
+    block[1].original,
+    block[1].verse,
+    block[1].meta
+  ]);
+  await section(block[2].title, [
+    block[2].original,
+    block[2].verse,
+    block[2].meta
+  ]);
 }
 
 async function section(title, block) {
