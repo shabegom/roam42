@@ -30,9 +30,11 @@ if (typeof window.roam42 === 'undefined') {
 
   roam42.host = document.currentScript.src.replace('main.js', '');
 
+
   // roam42.loader
   (() => {
     roam42.loader = {};
+
 
     const URLScriptServer = document.currentScript.src.replace('main.js', '');
     const disabledFeatures = typeof window.disabledFeatures !== 'undefined'
