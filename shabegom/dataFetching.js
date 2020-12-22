@@ -14,12 +14,12 @@
       });
 
   roam42.shabegom.horoscope = async () => {
-    const sign = "taurus";
-    return await fetch(
-      `https://shbgm-cors.glitch.me/https://horoscope-api.herokuapp.com/horoscope/today/${sign}`
-    )
+    return await fetch(`https://shabegom-roam-helpers.glitch.me/horoscope`)
       .then(res => res.json())
-      .then(data => `> ${data.horoscope}`);
+      .then(data => {
+        let sum = `> ${data.summary}`;
+        let dos = data.todo;
+      });
   };
 
   roam42.shabegom.shakespeare = async () =>
