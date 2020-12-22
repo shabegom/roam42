@@ -45,18 +45,15 @@
     await roam42.shabegom.bibleVerses(religion);
 
     // Wiki
-    await roam42.shabegom.header(`**${wiki.title}**`);
-
     if (wiki.thumbnail) {
-      await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
-        `![](${wiki.thumbnail.source})`
-      );
+      await roam42.shabegom.multiSection(wiki.title, [
+        wiki.thumbnail,
+        wiki.excerpt,
+        wiki.url
+      ]);
+    } else {
+      await roam42.shabegom.multiSection(wiki.title, [wiki.excerpt, wiki.url]);
     }
-    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(wiki.extract);
-    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
-      wiki.content_urls.desktop.page
-    );
-    await roam42.shabegom.unTab();
 
     // Poem
     await roam42.shabegom.section(

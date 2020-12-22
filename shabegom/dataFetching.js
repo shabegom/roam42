@@ -3,64 +3,29 @@
   roam42.shabegom.fetchReadwise = async () =>
     await fetch("https://shabegom-roam-helpers.glitch.me/readwise")
       .then(res => res.json())
-      .then(data =>
-        data.map(
-          highlight =>
-            `${highlight.text} ([[${highlight.author}]], [[${highlight.title}]])`
-        )
-      )
       .catch(e => {
         alert(e);
       });
 
-  roam42.shabegom.horoscope = async () => {
-    return await fetch(
-      `https://shabegom-roam-helpers.glitch.me/horoscope`
-    ).then(res => res.json());
-  };
+  roam42.shabegom.horoscope = async () =>
+    await fetch(`https://shabegom-roam-helpers.glitch.me/horoscope`).then(res =>
+      res.json()
+    );
 
   roam42.shabegom.shakespeare = async () =>
-    await fetch("https://shabegom-roam-helpers.glitch.me/shakespeare")
-      .then(res => res.json())
-      .then(
-        data => `> ${data.quote} 
-\t— [[${data.play}]]`
-      );
+    await fetch("https://shabegom-roam-helpers.glitch.me/shakespeare").then(
+      res => res.json()
+    );
 
   roam42.shabegom.stoic = async () =>
-    await fetch(
-      "https://shbgm-cors.glitch.me/" + "https://stoic-quotes.com/api/quote"
-    )
+    await fetch("https://shabegom-roam-helpers.glitch.me/stoic")
       .then(r => r.json())
-      .then(data => `> ${data.text} - [[${data.author}]]`)
       .catch(e => `There was an error... ${e}`);
 
-  roam42.shabegom.religion = async () => {
-    const date = formatDate();
-    let json = await fetch(
-      `https://shbgm-cors.glitch.me/https://devotionalium.com/api/v2/?date=${date}`
-    ).then(res => res.json());
-    let arr = [];
-    for (i in json) {
-      arr.push(json[i]);
-    }
-    let books = ["[[Torah]]", "[[Bible]]", "[[Quran]]"];
-    return arr
-      .map((item, i) => {
-        if (item.text) {
-          let meta = item.book
-            ? `#[[${item.book}]] #${item.chapter}:${item.startVerse}-${item.endVerse} #[[${item.version.name}]]`
-            : `#${item.chapter}:${item.startVerse}-${item.endVerse} #[[${item.version.name}]]`;
-          return {
-            title: books[i],
-            original: `${item.textOriginal}`,
-            verse: `> ${item.text}`,
-            meta
-          };
-        }
-      })
-      .filter(el => el !== undefined);
-  };
+  roam42.shabegom.religion = async () =>
+    await fetch("https://shabegom-roam-helpers.glitch.me/religion").then(res =>
+      res.json()
+    );
 
   roam42.shabegom.randomWiki = async () =>
     await fetch(
