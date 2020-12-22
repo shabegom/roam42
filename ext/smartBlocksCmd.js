@@ -55,19 +55,27 @@
       valueArray.push({key: '<% CURSOR %> (SmartBlock Command)',             icon:'gear', value: '<%CURSOR%>',             processor:'static',
                              help:'<b>CURSOR</b><br/>Defines where cursor<br/> should be located after<br/> the workflow completes.'});
       valueArray.push({key: '<% CLIPBOARDCOPY: %> (SmartBlock Command)',      icon:'gear', value: '<%CLIPBOARDCOPY:&&&%>',  processor:'static',
-                             help:'<b>CLIPBOARD</b><br/>Writes text to the clipboard<br/><br/>1: text'});
-      valueArray.push({key: '<% DEFOCUS %> (SmartBlock Command)', icon:'gear', value: '<%DEFOCUS%>', processor:'static',
-                             help:'<b>DEFOCUS</b><br/>Only use in #42SmartBlock definition<br/>To exit out of edit mode<br/>after SmartBlock runs.'});
+                             help:'<b>CLIPBOARDCOPY</b><br/>Writes text to the clipboard<br/><br/>1: text'});
+      valueArray.push({key: '<% CLIPBOARDPASTETEXT %> (SmartBlock Command)',      icon:'gear', value: '<%CLIPBOARDPASTETEXT%>',  processor:'static',
+                             help:'<b>CLIPBOARDPASTETEXT</b><br/>Pastes the from the clipboard'});
+      valueArray.push({key: '<% NOCURSOR %> (SmartBlock Command)', icon:'gear', value: '<%NOCURSOR%>', processor:'static',
+                             help:'<b>NOCURSOR</b><br/>Only use in #42SmartBlock<br/>definition. Use to exit out of<br/>edit mode after SmartBlock runs.'});
       valueArray.push({key: '<% CONCAT: %> (SmartBlock Command)',             icon:'gear', value: '<%CONCAT:&&&%>',         processor:'static',
-                             help:'<b>CONCAT</b><br/>Combines a comma separed list<br/> of strings ont one string<br/><br/>1: comma separated list'});
-      valueArray.push({key: '<% CURRENTBLOCKREF: %> (SmartBlock Command)',    icon:'gear', value: '<%CURRENTBLOCKREF%>',    processor:'static',
-                             help:'<b>CURRENTBLOCKREF</b><br/>Returns the block UID<br/> for the current block'});
+                             help:'<b>CONCAT</b><br/>Combines a comma separated list<br/> of strings into one string<br/><br/>1: comma separated list'});
+      valueArray.push({key: '<% CURRENTBLOCKREF: %> (SmartBlock Command)',    icon:'gear', value: '<%CURRENTBLOCKREF:&&&%>',    processor:'static',
+                             help:'<b>CURRENTBLOCKREF</b><br/>Sets a variable to the <br/>block UID for the current block<br/><br/>1. Variable name'});
       valueArray.push({key: '<% DATE: %> dd (SmartBlock Command)',               icon:'gear', value: '<%DATE:&&&%>',           processor:'static',
                              help:'<b>DATE</b><br/>Returns a Roam formatted<br/>dated page reference.<br/><br/>1: NLP expression<br/>2: optional: format for returned <br/>date, example: YYYY-MM-DD'});
       valueArray.push({key: '<% EXIT %> (SmartBlock Command)',               icon:'gear', value: '<%EXIT%>',               processor:'static',
                              help:'<b>EXIT</b><br/>Stops the workflow from<br/>going further after<br/>completing the current block'});
       valueArray.push({key: '<% FOCUSONBLOCK %> (SmartBlock Command)',       icon:'gear', value: '<%FOCUSONBLOCK%>',       processor:'static',
                              help:'<b>FOCUSONBLOCK</b><br/>Will focus on the<br/>current block after the<br/>workflow finshes. '});
+      valueArray.push({key: '<% INDENT %> (SmartBlock Command)',       icon:'gear', value: '<%INDENT%>',       processor:'static',
+                       help:'<b>INDENT</b><br/>Indents the current block if <br/>indentation can be done at current block. '});
+      valueArray.push({key: '<% UNINDENT %> (SmartBlock Command)',       icon:'gear', value: '<%UNINDENT%>',       processor:'static',
+                       help:'<b>UNINDENT</b><br/>Unidents at the current block if <br/>it can be done at current block. '});
+      valueArray.push({key: '<% HIDE: %> (SmartBlock Command)',      icon:'gear', value: '<%HIDE%>',      processor:'static',
+                             help:'<b>HIDE</b><br/>Directive used with SmartBlock<br/> parent block to indicate this block is<br/> hidden from menu'});
       valueArray.push({key: '<% IF: %> (SmartBlock Command)',                 icon:'gear', value: '<%IF:&&&%>',             processor:'static',
                              help:'<b>IF</b><br/>Evaluates a condition for true.<br/>Use with THEN & ELSE.<br/><br/>1: Logic to be evaluated<br/>'});
       valueArray.push({key: '<% THEN: %> (SmartBlock Command)',               icon:'gear', value: '<%THEN:&&&%>',           processor:'static',
@@ -94,6 +102,8 @@
                              help:'<b>NOTIFICATION</b><br/>Displays notification window<br/><br/>1: Seconds<br/>2: Message'});
       valueArray.push({key: '<% NOBLOCKOUTPUT: %> (SmartBlock Command)',      icon:'gear', value: '<%NOBLOCKOUTPUT%>',      processor:'static',
                              help:'<b>NOBLOCKOUTPUT</b><br/>No content output from a block'});
+      valueArray.push({key: '<% ONBLOCKEXIT: %> (SmartBlock Command)',    icon:'gear', value: '<%ONBLOCKEXIT:&&&%>',processor:'static',
+                             help:'<b>ONBLOCKEXIT</b><br/>Asynchronous JavaScript code to <br/>run after a block has been<br/>processed by Roam42<br/>1. JavaScipt code<br/>Return value not processed'});
       valueArray.push({key: '<% PAGE %> subcommand (SmartBlock Command)',    icon:'gear', value: '<%PAGE%>',               processor:'static',
                              help:'<b>PAGE</b><br/>For commands that support<br/>the PAGE directive, a <br/>page reference is outpu'});
       valueArray.push({key: '<% UID %> subcommand (SmartBlock Command)',    icon:'gear', value: '<%UID%>',               processor:'static',
@@ -194,12 +204,6 @@
         var vValue = roam42.smartBlocks.activeWorkflow.vars[commandToProcess];
         if(vValue==undefined) vValue = `--> Variable ${commandToProcess} not SET <--`
         return vValue;   
-      });      
-      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%CURRENTBLOCKREF\%\>)/g, async (match, name)=>{
-        let tID = await roam42.common.asyncQuerySelector(document,'textarea.rm-block-input');
-        let UID = tID.id;
-        let results = '((' + UID.substring( UID.length -9) + '))';
-        return results;
       });
       textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%RESOLVEBLOCKREF:)(\s*[\S\s]*?)(\%\>)/g, async (match, name)=>{
         var commandToProcess = match.replace('<%RESOLVEBLOCKREF:','').replace('%>','').trim();
@@ -247,7 +251,7 @@
           if(scriptToRun.substring(0,13)=='```javascript')
             scriptToRun = scriptToRun.substring(13,scriptToRun.length-3); 
           var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
-          var results = new AsyncFunction(scriptToRun.toString())();
+          var results = await new AsyncFunction(scriptToRun.toString())();
           return results;
         });           
         textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%INPUT:)(\s*[\S\s]*?)(\%\>)/g, async (match, name)=>{
@@ -429,7 +433,7 @@
               roam42.help.displayMessage(commandToProcess + ' is not a valid Roam42 SmartBlock',3000);
               return '---- SmartBlock:  **' + commandToProcess + '**  does not exist. ----'
             } else {
-              await roam42.smartBlocks.sbBomb({original: sbCommand},true);
+              await roam42.smartBlocks.sbBomb({original: sbCommand},true,true);
               return roam42.smartBlocks.exclusionBlockSymbol
             }
           });
@@ -441,8 +445,44 @@
       return textToProcess; //resert new text
     }
     
-  // window.roam42.smartBlocks.testingReloadCmds = () => {
-  //   roam42.loader.addScriptToPage( "smartBlocks", roam42.host + 'ext/smartBlocksCmds.js');
-  // };
+    roam42.smartBlocks.processBlockAfterBlockInserted = async (textToProcess)=> {
+      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%UNINDENT\%\>)/g, async (match, name)=>{
+        await roam42KeyboardLib.pressShiftTab(500);
+        return ''; 
+      });      
+      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%INDENT\%\>)/g, async (match, name)=>{
+        await roam42KeyboardLib.pressTab(500);
+        return ''; 
+      });
+      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%CURRENTBLOCKREF:)(\s*[\S\s]*?)(\%\>)/g, async (match, name)=>{
+        var commandToProcess = match.replace('<%CURRENTBLOCKREF:','').replace('%>','');
+        let UID = document.querySelector("textarea.rm-block-input").id;
+        roam42.smartBlocks.activeWorkflow.vars[commandToProcess]='((' + UID.substring( UID.length -9) + '))';
+        return '';
+      });                        
+      await roam42.common.replaceAsync(textToProcess, /(\<\%CURSOR\%\>)/g, async (match, name)=>{
+        roam42.smartBlocks.activeWorkflow.startingBlockTextArea = document.activeElement.id; //if CURSOR, then make this the position block in end
+      }); 
+      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%FOCUSONBLOCK\%\>)/g, async (match, name)=>{
+        //if assigned, will zoom to this location later
+        roam42.smartBlocks.activeWorkflow.focusOnBlock = document.activeElement.id; //if CURSOR, then make this the position block in end
+        return ''; 
+      });
+      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%ONBLOCKEXIT:)(\s*[\S\s]*?)(\%\>)/g, async (match, name)=>{
+        var scriptToRun = match.replace('<%ONBLOCKEXIT:','').replace('%>','').trim();
+        if(scriptToRun.substring(0,13)=='```javascript')
+          scriptToRun = scriptToRun.substring(13,scriptToRun.length-3); 
+        roam42.smartBlocks.activeWorkflow.onBlockExitCode = scriptToRun;
+        return '';
+      });                  
+      return textToProcess;
+    }
     
+    roam42.smartBlocks.processBlockOnBlockExit = async ()=>{
+      if(roam42.smartBlocks.activeWorkflow.onBlockExitCode!='') {
+        var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+        var results = await new AsyncFunction( roam42.smartBlocks.activeWorkflow.onBlockExitCode )();
+        roam42.smartBlocks.activeWorkflow.onBlockExitCode='';
+      }
+    }
 })();
