@@ -26,9 +26,9 @@
     await roam42.shabegom.section("Moon 🌝", moon);
 
     // Horoscope
-    await roam42.shabegom.multiSection("#Horoscope", [
+    await roam42.shabegom.multiSection("#Horoscope 🐐", [
       `> ${scope.summary}`,
-      `Do: ${scope.todo.join(" ")}`
+      `**Do:** ${scope.todo.join(", ")}`
     ]);
     // Shakespeare
     await roam42.shabegom.section("#Shakespeare", shakespeare);
