@@ -28,37 +28,19 @@
     );
 
   roam42.shabegom.randomWiki = async () =>
-    await fetch(
-      "https://en.wikipedia.org/w/api.php?action=query&list=random&format=json&rnnamespace=0&origin=*&rnlimit=1"
-    )
-      .then(res => res.json())
-      .then(data => data.query.random[0].title)
-      .then(
-        async title =>
-          await fetch(
-            `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURI(
-              title
-            )}`
-          ).then(res => res.json())
-      );
+    await fetch("https://shabegom-roam-helpers.glitch.me/random-wiki").then(
+      res => res.json()
+    );
 
   roam42.shabegom.poem = async () =>
-    await fetch("https://www.poemist.com/api/v1/randompoems")
+    await fetch("https://shabegom-roam-helpers.glitch.me/poem")
       .then(r => r.json())
       .catch(e => alert(e));
 
-  roam42.shabegom.quote = async (type, searchTerm) => {
-    const baseUrl = `https://goodquotesapi.herokuapp.com/${type}/${searchTerm}`;
-    const quotes = await collectQuotes([], 1, 5, baseUrl);
-    const quote = quotes[randomInteger(quotes.length - 1)];
-    let source;
-    if (quote.publication) {
-      source = `- [[${quote.publication}]] – [[${quote.author}]]`;
-    } else {
-      source = `- [[${quote.author}]]`;
-    }
-    return { quote: quote.quote, source };
-  };
+  roam42.shabegom.quote = async (type, searchTerm) =>
+    await fetch(
+      `https://shabegom-roam-helpers.glitch.me/quote/?type=${type}&searchTerm=${searchTerm}`
+    ).then(res => res.json());
 
   roam42.shabegom.pinboard = async (num = 1) =>
     await fetch(

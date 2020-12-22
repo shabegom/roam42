@@ -56,10 +56,7 @@
     }
 
     // Poem
-    await roam42.shabegom.section(
-      `**${poem[0].title}** – [[${poem[0].poet.name}]]`,
-      poem[0].content
-    );
+    await roam42.shabegom.section(poem.title, poem.poemContent);
 
     // Read Later Link
     const ref = await roam42.smartBlocks.getRandomBlocksMention("readlater");
