@@ -14,12 +14,9 @@
       });
 
   roam42.shabegom.horoscope = async () => {
-    return await fetch(`https://shabegom-roam-helpers.glitch.me/horoscope`)
-      .then(res => res.json())
-      .then(data => {
-        let sum = `> ${data.summary}`;
-        let dos = data.todo;
-      });
+    return await fetch(
+      `https://shabegom-roam-helpers.glitch.me/horoscope`
+    ).then(res => res.json());
   };
 
   roam42.shabegom.shakespeare = async () =>
