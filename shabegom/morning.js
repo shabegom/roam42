@@ -27,8 +27,8 @@
 
     // Horoscope
     await roam42.shabegom.multiSection("#Horoscope 🐐", [
-      `> ${scope.summary}`,
-      `**Do:** ${scope.todo.join(", ")}`
+      `> ${horoscope.summary}`,
+      `**Do:** ${horoscope.todo.join(", ")}`
     ]);
     // Shakespeare
     await roam42.shabegom.section("#Shakespeare", shakespeare);
