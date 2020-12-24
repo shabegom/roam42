@@ -83,6 +83,6 @@
     await roam42.smartBlocks.outputArrayWrite();
     await roam42.common.sleep(1000);
     await roam42KeyboardLib.pressEsc();
-    await window.history.back();
+    await history.go(-1);
   };
 })();
