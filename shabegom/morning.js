@@ -4,15 +4,25 @@
     // Data Fetching
     await roam42.help.displayMessage("Fetching Data", 2000);
     const readwise = await roam42.shabegom.fetchReadwise();
+    await roam42.help.displayMessage("Readwise Fetched", 2000);
     const horoscope = await roam42.shabegom.horoscope();
+    await roam42.help.displayMessage("Horoscope Fetched", 2000);
     const shakespeare = await roam42.shabegom.shakespeare();
+    await roam42.help.displayMessage("Shakespeare Fetched", 2000);
     const stoic = await roam42.shabegom.stoic();
+    await roam42.help.displayMessage("Stoic Fetched", 2000);
     const religion = await roam42.shabegom.religion();
+    await roam42.help.displayMessage("Religion Fetched", 2000);
     const wiki = await roam42.shabegom.randomWiki();
+    await roam42.help.displayMessage("Wiki Fetched", 2000);
     const poem = await roam42.shabegom.poem();
+    await roam42.help.displayMessage("Poem Fetched", 2000);
     const buddha = await roam42.shabegom.quote("author", "gautama+buddha");
+    await roam42.help.displayMessage("Buddha Fetched", 2000);
     const quote = await roam42.shabegom.quote("title", roam42.shabegom.word());
+    await roam42.help.displayMessage("Quote Fetched", 2000);
     const pinboard = await roam42.shabegom.pinboard(1);
+    await roam42.help.displayMessage("Pinboard Fetched", 2000);
     const moon = await roam42.shabegom.getMoon();
     const untetheredQuote = await roam42.common.getRandomBlockFromPage(
       "The Untethered Soul"
