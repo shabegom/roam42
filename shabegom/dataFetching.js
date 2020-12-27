@@ -53,4 +53,9 @@
     ).then(res => res.json());
     return { url: `{{iframe:${moon.url}}}`, phase: `**${moon.phase}**` };
   };
+
+  roam42.shabegom.getArticle = async url =>
+    await fetch(
+      `https://shaebgom-roam-helpers.glitch.me/article?url=${url}`
+    ).then(res => res.json());
 })();
