@@ -83,16 +83,20 @@
     // Indent the block below
     await roam42.common.navigateUiTo(pinboard[0].rawPage);
     await roam42.common.sleep(1000);
-    await roam42.common.simulateMouseClick(
-      document.getElementById("block-input-ghost")
-    );
-    await roam42.common.sleep(1000);
-    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
-      pinboard[0].link
-    );
-    await roam42.smartBlocks.outputArrayWrite();
-    await roam42.common.sleep(1000);
-    await roam42KeyboardLib.pressEsc();
-    await history.go(-1);
+    if (document.getElementById("block-input-ghost")) {
+      await roam42.common.simulateMouseClick(
+        document.getElementById("block-input-ghost")
+      );
+      await roam42.common.sleep(1000);
+      await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+        pinboard[0].link
+      );
+      await roam42.smartBlocks.outputArrayWrite();
+      await roam42.common.sleep(1000);
+      await roam42KeyboardLib.pressEsc();
+      await history.go(-1);
+    } else {
+      await history.go(-1);
+    }
   };
 })();
