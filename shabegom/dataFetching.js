@@ -44,13 +44,13 @@
 
   roam42.shabegom.pinboard = async (num = 1) =>
     await fetch(
-      `https://shabegom-roam-helpers.glitch.me/pinboard?num=${num}`
+      `https://shabegom-roam-helpers.glitch.me/pinboard/?num=${num}`
     ).then(res => res.json());
 
   roam42.shabegom.getMoon = async () => {
-    const url = await fetch(
+    const moon = await fetch(
       "https://shabegom-roam-helpers.glitch.me/moon"
-    ).then(res => res.text());
-    return `{{iframe:${url}}}`;
+    ).then(res => res.json());
+    return { url: `{{iframe:${moon.url}}}`, phase: `**${moon.phase}**` };
   };
 })();

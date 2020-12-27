@@ -33,7 +33,7 @@
     await roam42.shabegom.multiSection("#Readwise", readwise);
 
     // Moon
-    await roam42.shabegom.section("Moon 🌝", moon);
+    await roam42.shabegom.multiSection("Moon 🌝", [moon.phase, moon.url]);
 
     // Horoscope
     await roam42.shabegom.multiSection("#Horoscope 🐐", [
