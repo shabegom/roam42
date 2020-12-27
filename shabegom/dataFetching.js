@@ -56,6 +56,6 @@
 
   roam42.shabegom.getArticle = async url =>
     await fetch(
-      `https://shaebgom-roam-helpers.glitch.me/article?url=${url}`
+      `https://shabegom-roam-helpers.glitch.me/article?url=${url}`
     ).then(res => res.json());
 })();
