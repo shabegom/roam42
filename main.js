@@ -43,11 +43,11 @@ if (typeof window.roam42 === "undefined") {
     const addElementToPage = (element, tagId, typeT) => {
       try {
         document.getElementById(tagId).remove();
-      } catch (e) {} // Delete any existing reference
+      } catch (e) {} //Delete any existing reference
       if (disabledFeatures && disabledFeatures.indexOf(tagId) > -1) {
         return;
-      } // Exit if disabled
-      Object.assign(element, { type: typeT, async: false, tagId });
+      } //Exit if disabled
+      Object.assign(element, { type: typeT, async: false, tagId: tagId });
       document.getElementsByTagName("head")[0].appendChild(element);
     };
 
@@ -91,121 +91,105 @@ if (typeof window.roam42 === "undefined") {
   // ****************************************************
 
   (() => {
-    roam42.loader.addScriptToPage("libs", `${roam42.host}dist/libs.js`);
-    roam42.loader.addCSSToPage("cssLibs", `${roam42.host}dist/libs.css`);
+    roam42.loader.addScriptToPage("libs", roam42.host + "dist/libs.js");
+    roam42.loader.addCSSToPage("cssLibs", roam42.host + "dist/libs.css");
 
     //common shared functions
     roam42.loader.addCSSToPage("styleRM", roam42.host + "css/styleRM.css");
     roam42.loader.addScriptToPage(
       "commonFunctions",
-      `${roam42.host}common/commonFunctions.js`
+      roam42.host + "common/commonFunctions.js"
     );
     roam42.loader.addScriptToPage(
       "commonDatalog",
-      `${roam42.host}common/commonDatalog.js  `
+      roam42.host + "common/commonDatalog.js  "
     );
     roam42.loader.addScriptToPage("settings", roam42.host + "ext/settings.js");
     roam42.loader.addScriptToPage("jumpNav", roam42.host + "ext/jumpNav.js");
     roam42.loader.addScriptToPage(
       "message-startup",
-      `${roam42.host}common/messages.js`
-    );
 
-    // extension modules
+
+    //extension modules
     roam42.loader.addScriptToPage(
       "dateProcessing",
-      `${roam42.host}ext/dateProcessing.js`
+      roam42.host + "ext/dateProcessing.js"
     );
     roam42.loader.addScriptToPage(
       "r42kb_lib",
-      `${roam42.host}common/r42kb_lib.js`
+      roam42.host + "common/r42kb_lib.js"
     );
     roam42.loader.addScriptToPage(
       "smartBlocks",
-      `${roam42.host}ext/smartBlocks.js`
+      roam42.host + "ext/smartBlocks.js"
     );
     roam42.loader.addScriptToPage(
       "templatePoc",
-      `${roam42.host}ext/templatepoc.js`
+      roam42.host + "ext/templatepoc.js"
     );
     roam42.loader.addScriptToPage(
       "jumpToDate",
-      `${roam42.host}ext/jumpToDate.js`
+      roam42.host + "ext/jumpToDate.js"
     );
     roam42.loader.addScriptToPage(
       "autocomplete",
-      `${roam42.host}ext/autoComplete.js`
+      roam42.host + "ext/autoComplete.js"
     );
     roam42.loader.addScriptToPage(
       "privacyMode",
-      `${roam42.host}ext/privacyMode.js`
+      roam42.host + "ext/privacyMode.js"
     );
     roam42.loader.addScriptToPage(
       "roam42Menu",
-      `${roam42.host}ext/roam42Menu.js`
+      roam42.host + "ext/roam42Menu.js"
     );
     roam42.loader.addScriptToPage(
       "roam42Tutorials",
-      `${roam42.host}ext/tutorials.js`
+      roam42.host + "ext/tutorials.js"
     );
     roam42.loader.addScriptToPage(
       "roamNavigator",
-      `${roam42.host}ext/roam-navigator.js`
+      roam42.host + "ext/roam-navigator.js"
     );
     roam42.loader.addScriptToPage(
       "smartBlocksCmd",
-      `${roam42.host}ext/smartBlocksCmd.js`
+      roam42.host + "ext/smartBlocksCmd.js"
     );
     roam42.loader.addScriptToPage(
       "smartBlocksRB",
-      `${roam42.host}ext/smartBlocksRB.js`
+      roam42.host + "ext/smartBlocksRB.js"
     );
-    roam42.loader.addScriptToPage("timemgmt", `${roam42.host}ext/timemgmt.js`);
+    roam42.loader.addScriptToPage("timemgmt", roam42.host + "ext/timemgmt.js");
 
-<<<<<<< HEAD
-=======
-    // Load in custom Shabegom Stuff
-    roam42.loader.addScriptToPage("shabegom", `${roam42.host}shabegom/main.js`);
-    roam42.loader.addScriptToPage("utils", `${roam42.host}shabegom/utils.js`);
-    roam42.loader.addScriptToPage(
-      "randomWord",
-      `${roam42.host}shabegom/randomWord.js`
-    );
-    roam42.loader.addScriptToPage(
-      "dataFetching",
-      `${roam42.host}shabegom/dataFetching.js`
-    );
-
-    // Do not load in iframe windows
->>>>>>> add utility functions
+    //Do not load in iframe windows
     if (window === window.parent) {
       roam42.loader.addScriptToPage(
         "quickReference",
-        `${roam42.host}ext/quickRef.js`
+        roam42.host + "ext/quickRef.js"
       );
       roam42.loader.addScriptToPage(
         "lookupUI",
-        `${roam42.host}ext/typeaheadUI.js`
+        roam42.host + "ext/typeaheadUI.js"
       );
       roam42.loader.addScriptToPage(
         "typeAheadData",
-        `${roam42.host}ext/typeaheadData.js`
+        roam42.host + "ext/typeaheadData.js"
       );
       roam42.loader.addScriptToPage(
         "formatConverter",
-        `${roam42.host}ext/formatConverter.js`
+        roam42.host + "ext/formatConverter.js"
       );
       roam42.loader.addScriptToPage(
         "formatConverterUI",
-        `${roam42.host}ext/formatConverterUI.js`
+        roam42.host + "ext/formatConverterUI.js"
       );
       roam42.loader.addScriptToPage(
         "livePreview",
-        `${roam42.host}ext/livePreview.js`
+        roam42.host + "ext/livePreview.js"
       );
       roam42.loader.addScriptToPage(
         "dailyNote",
-        `${roam42.host}ext/dailyNotesPopup.js`
+        roam42.host + "ext/dailyNotesPopup.js"
       );
       //      roam42.loader.addScriptToPage( 'focuesMode',        roam42.host + 'ext/focusMode.js'  );
     }
