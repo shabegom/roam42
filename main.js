@@ -1,6 +1,6 @@
 /* global  roam42, loadKeyEvents, loadTypeAhead, loadJumpNav, jumpToDateComponent,
            rmQuickRefenceSystem, device, displayStartup,
-           loadAutoComplete, iziToast
+           loadAutoComplete
 */
 
 /* roam42 namespace structure
@@ -25,6 +25,7 @@
 
 ;(()=>{});
 
+
 if( typeof window.roam42 == 'undefined' ) {
 
   window.roam42     =   {};
@@ -33,6 +34,7 @@ if( typeof window.roam42 == 'undefined' ) {
   roam42.host    = document.currentScript.src.replace('main.js','');
 
   // roam42.loader
+
   (()=>{
     roam42.loader =  {};
 
@@ -61,6 +63,60 @@ if( typeof window.roam42 == 'undefined' ) {
       addElementToPage(Object.assign(document.createElement('link'),{href:cssToAdd, rel: 'stylesheet'} ) , tagId, 'text/css');
     }
 
+
+  (() => {
+    roam42.loader = {};
+
+    const URLScriptServer = document.currentScript.src.replace("main.js", "");
+    const disabledFeatures =
+      typeof window.disabledFeatures !== "undefined"
+        ? window.disabledFeatures
+        : [];
+
+    const addElementToPage = (element, tagId, typeT) => {
+      try {
+        document.getElementById(tagId).remove();
+      } catch (e) {} // Delete any existing reference
+      if (disabledFeatures && disabledFeatures.indexOf(tagId) > -1) {
+        return;
+      } // Exit if disabled
+      Object.assign(element, { type: typeT, async: false, tagId });
+      document.getElementsByTagName("head")[0].appendChild(element);
+    };
+
+    roam42.loader.logo2HC =
+      "https://cdn.glitch.com/e6cdf156-cbb9-480b-96bc-94e406043bd1%2F42logo-2hc.png?v=1599851355892";
+    roam42.loader.disabledFeatures =
+      typeof window.disabledFeatures !== "undefined"
+        ? window.disabledFeatures
+        : [];
+
+    roam42.loader.addScriptToPage = (tagId, script) => {
+      addElementToPage(
+        Object.assign(document.createElement("script"), { src: script }),
+        tagId,
+        "text/javascript"
+      );
+    };
+
+    roam42.loader.addModuleToPage = (tagId, script) => {
+      addElementToPage(
+        Object.assign(document.createElement("script"), { src: script }),
+        tagId,
+        "module"
+      );
+    };
+
+    roam42.loader.addCSSToPage = (tagId, cssToAdd) => {
+      addElementToPage(
+        Object.assign(document.createElement("link"), {
+          href: cssToAdd,
+          rel: "stylesheet"
+        }),
+        tagId,
+        "text/css"
+      );
+    };
   })();
 
   // ****************************************************
@@ -108,6 +164,7 @@ if( typeof window.roam42 == 'undefined' ) {
     }
     roam42.loader.addScriptToPage( 'keyEvents',         roam42.host + 'common/keyevents.js'       );
 
+
     // Give the libraries a few seconds to get comfy in their new home
     // and then let the extension dance, that is to say,
     // begin initializing the environment with all the cool tools
@@ -138,6 +195,7 @@ if( typeof window.roam42 == 'undefined' ) {
       }
     }, 1000);
     
+
   })();
 
 }
