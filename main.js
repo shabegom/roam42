@@ -1,6 +1,6 @@
 /* global  roam42, loadKeyEvents, loadTypeAhead, loadJumpNav, jumpToDateComponent,
            rmQuickRefenceSystem, device, displayStartup,
-           loadAutoComplete, iziToast
+           loadAutoComplete
 */
 
 /* roam42 namespace structure
@@ -43,11 +43,11 @@ if (typeof window.roam42 === "undefined") {
     const addElementToPage = (element, tagId, typeT) => {
       try {
         document.getElementById(tagId).remove();
-      } catch (e) {} //Delete any existing reference
+      } catch (e) {} // Delete any existing reference
       if (disabledFeatures && disabledFeatures.indexOf(tagId) > -1) {
         return;
-      } //Exit if disabled
-      Object.assign(element, { type: typeT, async: false, tagId: tagId });
+      } // Exit if disabled
+      Object.assign(element, { type: typeT, async: false, tagId });
       document.getElementsByTagName("head")[0].appendChild(element);
     };
 
@@ -91,153 +91,189 @@ if (typeof window.roam42 === "undefined") {
   // ****************************************************
 
   (() => {
-    roam42.loader.addScriptToPage("libs", roam42.host + "dist/libs.js");
-    roam42.loader.addCSSToPage("cssLibs", roam42.host + "dist/libs.css");
+    roam42.loader.addScriptToPage("libs", `${roam42.host}dist/libs.js`);
+    roam42.loader.addCSSToPage("cssLibs", `${roam42.host}dist/libs.css`);
 
-    //common shared functions
-    roam42.loader.addCSSToPage("styleRM", roam42.host + "css/styleRM.css");
+    // load all 3rd party libraries
+    // roam42.loader.addScriptToPage( 'JQUERY',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js' );
+    // roam42.loader.addScriptToPage( 'JSCOOKIE',         roam42.host + 'dist/jscookie/js.cookie-3.0.0-rc.1.min.js'                                 );
+    // roam42.loader.addScriptToPage( 'MOUSETRAP',        roam42.host + 'dist/mousetrap/mousetrap-1.6.5.min.js' );
+    // roam42.loader.addScriptToPage( 'chrono',           roam42.host + 'dist/chrono/chrono-1.4.8.min.js' );
+    // roam42.loader.addScriptToPage( 'dayjs',            roam42.host + 'dist/dayjs/dayjs.min.js' );
+    // roam42.loader.addScriptToPage( 'jsFlatpickr',      roam42.host + 'dist/flatpickr/flatpickr-4.6.6.min.js' );
+    //   roam42.loader.addCSSToPage( 'cssFlatpckr',      roam42.host + 'dist/flatpickr/flatpickr.min.css' );
+    //   roam42.loader.addCSSToPage( 'cssFlatpckrThme',  roam42.host + 'css/airbnb.css' );
+    // roam42.loader.addScriptToPage( 'jsJsPanel',        roam42.host + 'dist/jspanel/jspanel-4.11.2.min.js' );
+    //   roam42.loader.addCSSToPage( 'cssJsPanel',       roam42.host + 'dist/jspanel/jspanel.min.css' );
+    // roam42.loader.addScriptToPage( 'tributeJS',        roam42.host + 'dist/tribute/tribute.min.js' );
+
+    // Do not load in iframe windows
+    // if( window === window.parent  ){
+    // roam42.loader.addScriptToPage( 'TYPEAHEAD',       roam42.host + 'dist/typeahead/typeahead-0.11.1.bundle.js' );
+    // roam42.loader.addScriptToPage( 'popperjs',        roam42.host + 'dist/popperjs/popperjs-core-2.5.4.js'                                         );
+    // roam42.loader.addScriptToPage( 'tippyjs',         roam42.host + 'dist/tippy/tippy-6.2.7.min.js' );
+    //   roam42.loader.addCSSToPage( 'cssTippyjs',      roam42.host + 'dist/tippy/light-border.css' );
+
+    // roam42.loader.addScriptToPage( 'iziToast',        roam42.host + 'dist/iziToast/iziToast-1.4.0.min.js' );
+    //   roam42.loader.addCSSToPage( 'cssiziToast',     roam42.host + 'dist/iziToast/iziToast.min.css' );
+    //  roam42.loader.addScriptToPage( 'deviceDetection', roam42.host + 'dist/deviceDetection/current-device.min.js' );
+    // roam42.loader.addScriptToPage( 'marked-lib',      roam42.host + 'dist/marked/marked.min.js' ); //https://github.com/markedjs/marked
+    // }
+
+    // common shared functions
+    roam42.loader.addScriptToPage(
+      "hillChart",
+      "https://unpkg.com/hill-chart@latest/dist/hill-chart.umd.js"
+    );
+    roam42.loader.addCSSToPage("styleRM", `${roam42.host}css/styleRM.css`);
     roam42.loader.addScriptToPage(
       "commonFunctions",
-      roam42.host + "common/commonFunctions.js"
+      `${roam42.host}common/commonFunctions.js`
     );
     roam42.loader.addScriptToPage(
       "commonDatalog",
-      roam42.host + "common/commonDatalog.js  "
+      `${roam42.host}common/commonDatalog.js  `
     );
-    roam42.loader.addScriptToPage("settings", roam42.host + "ext/settings.js");
-    roam42.loader.addScriptToPage("jumpNav", roam42.host + "ext/jumpNav.js");
+    roam42.loader.addScriptToPage("settings", `${roam42.host}ext/settings.js`);
+    roam42.loader.addScriptToPage(
+      "keyEvents",
+      `${roam42.host}common/keyevents.js`
+    );
+    roam42.loader.addScriptToPage("jumpNav", `${roam42.host}ext/jumpNav.js`);
     roam42.loader.addScriptToPage(
       "message-startup",
+      `${roam42.host}common/messages.js`
+    );
 
-
-    //extension modules
+    // extension modules
     roam42.loader.addScriptToPage(
       "dateProcessing",
-      roam42.host + "ext/dateProcessing.js"
+      `${roam42.host}ext/dateProcessing.js`
     );
     roam42.loader.addScriptToPage(
       "r42kb_lib",
-      roam42.host + "common/r42kb_lib.js"
+      `${roam42.host}common/r42kb_lib.js`
     );
     roam42.loader.addScriptToPage(
       "smartBlocks",
-      roam42.host + "ext/smartBlocks.js"
+      `${roam42.host}ext/smartBlocks.js`
     );
     roam42.loader.addScriptToPage(
       "templatePoc",
-      roam42.host + "ext/templatepoc.js"
+      `${roam42.host}ext/templatepoc.js`
     );
     roam42.loader.addScriptToPage(
       "jumpToDate",
-      roam42.host + "ext/jumpToDate.js"
+      `${roam42.host}ext/jumpToDate.js`
     );
     roam42.loader.addScriptToPage(
       "autocomplete",
-      roam42.host + "ext/autoComplete.js"
+      `${roam42.host}ext/autoComplete.js`
     );
     roam42.loader.addScriptToPage(
       "privacyMode",
-      roam42.host + "ext/privacyMode.js"
+      `${roam42.host}ext/privacyMode.js`
     );
     roam42.loader.addScriptToPage(
       "roam42Menu",
-      roam42.host + "ext/roam42Menu.js"
+      `${roam42.host}ext/roam42Menu.js`
     );
     roam42.loader.addScriptToPage(
       "roam42Tutorials",
-      roam42.host + "ext/tutorials.js"
+      `${roam42.host}ext/tutorials.js`
     );
     roam42.loader.addScriptToPage(
       "roamNavigator",
-      roam42.host + "ext/roam-navigator.js"
+      `${roam42.host}ext/roam-navigator.js`
     );
     roam42.loader.addScriptToPage(
       "smartBlocksCmd",
-      roam42.host + "ext/smartBlocksCmd.js"
+      `${roam42.host}ext/smartBlocksCmd.js`
     );
     roam42.loader.addScriptToPage(
       "smartBlocksRB",
-      roam42.host + "ext/smartBlocksRB.js"
+      `${roam42.host}ext/smartBlocksRB.js`
     );
-    roam42.loader.addScriptToPage("timemgmt", roam42.host + "ext/timemgmt.js");
+    roam42.loader.addScriptToPage("timemgmt", `${roam42.host}ext/timemgmt.js`);
 
-    //Do not load in iframe windows
+    // Load in custom Shabegom Stuff
+    roam42.loader.addScriptToPage("shabegom", `${roam42.host}shabegom/main.js`);
+    roam42.loader.addScriptToPage("utils", `${roam42.host}shabegom/utils.js`);
+    roam42.loader.addScriptToPage(
+      "randomWord",
+      `${roam42.host}shabegom/randomWord.js`
+    );
+    roam42.loader.addScriptToPage(
+      "dataFetching",
+      `${roam42.host}shabegom/dataFetching.js`
+    );
+    roam42.loader.addScriptToPage(
+      "morning",
+      `${roam42.host}shabegom/morning.js`
+    );
+
+    // Do not load in iframe windows
     if (window === window.parent) {
       roam42.loader.addScriptToPage(
         "quickReference",
-        roam42.host + "ext/quickRef.js"
+        `${roam42.host}ext/quickRef.js`
       );
       roam42.loader.addScriptToPage(
         "lookupUI",
-        roam42.host + "ext/typeaheadUI.js"
+        `${roam42.host}ext/typeaheadUI.js`
       );
       roam42.loader.addScriptToPage(
         "typeAheadData",
-        roam42.host + "ext/typeaheadData.js"
+        `${roam42.host}ext/typeaheadData.js`
       );
       roam42.loader.addScriptToPage(
         "formatConverter",
-        roam42.host + "ext/formatConverter.js"
+        `${roam42.host}ext/formatConverter.js`
       );
       roam42.loader.addScriptToPage(
         "formatConverterUI",
-        roam42.host + "ext/formatConverterUI.js"
+        `${roam42.host}ext/formatConverterUI.js`
       );
       roam42.loader.addScriptToPage(
         "livePreview",
-        roam42.host + "ext/livePreview.js"
+        `${roam42.host}ext/livePreview.js`
       );
       roam42.loader.addScriptToPage(
         "dailyNote",
-        roam42.host + "ext/dailyNotesPopup.js"
+        `${roam42.host}ext/dailyNotesPopup.js`
       );
       //      roam42.loader.addScriptToPage( 'focuesMode',        roam42.host + 'ext/focusMode.js'  );
     }
-    roam42.loader.addScriptToPage(
-      "keyEvents",
-      roam42.host + "common/keyevents.js"
-    );
 
     // Give the libraries a few seconds to get comfy in their new home
     // and then let the extension dance, that is to say,
     // begin initializing the environment with all the cool tools
-
-    var loadingCounter = 0;
-
-    const interval = setInterval(() => {
-      if (roam42.keyevents) {
-        clearInterval(interval);
-        roam42.keyevents.loadKeyEvents();
-        try {
-          roam42.jumpToDate.component.initialize();
-        } catch (e) {}
-        try {
-          roam42.typeAhead.loadTypeAhead();
-        } catch (e) {}
-        try {
-          roam42.quickRef.component.initialize();
-        } catch (e) {}
-        try {
-          setTimeout(async () => {
-            await roam42.smartBlocks.initialize();
-          }, 100);
-        } catch (e) {}
-        roam42.autocomplete.loadAutoComplete();
-        roam42.jumpnav.loadJumpNav();
-        try {
-          if (device.mobile() == false && window === window.parent) {
-            try {
-              roam42.dailyNotesPopup.component.initialize();
-            } catch (e) {}
-          }
-        } catch (e) {}
-        try {
-          roam42.roam42Menu.initialize();
-        } catch (e) {}
-      } else {
-        if (loadingCounter > 60) clearInterval(interval);
-        else loadingCounter += 1;
-      }
-    }, 1000);
+    setTimeout(async () => {
+      roam42.keyevents.loadKeyEvents();
+      try {
+        roam42.jumpToDate.component.initialize();
+      } catch (e) {}
+      try {
+        roam42.typeAhead.loadTypeAhead();
+      } catch (e) {}
+      try {
+        roam42.quickRef.component.initialize();
+      } catch (e) {}
+      try {
+        await roam42.smartBlocks.initialize();
+      } catch (e) {}
+      roam42.autocomplete.loadAutoComplete();
+      roam42.jumpnav.loadJumpNav();
+      try {
+        if (device.mobile() == false && window === window.parent) {
+          try {
+            roam42.dailyNotesPopup.component.initialize();
+          } catch (e) {}
+        }
+      } catch (e) {}
+      try {
+        roam42.roam42Menu.initialize();
+      } catch (e) {}
+    }, 6000);
   })();
 }
