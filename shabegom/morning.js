@@ -7,6 +7,8 @@
     await roam42.help.displayMessage("Readwise Fetched", 2000);
     const horoscope = await roam42.shabegom.horoscope();
     await roam42.help.displayMessage("Horoscope Fetched", 2000);
+    const pattern = await roam42.shabegom.pattern();
+    await roam42.help.displayMessage("Pattern Fetched", 2000);
     const shakespeare = await roam42.shabegom.shakespeare();
     await roam42.help.displayMessage("Shakespeare Fetched", 2000);
     const stoic = await roam42.shabegom.stoic();
@@ -40,6 +42,7 @@
       `> ${horoscope.summary}`,
       `**Do:** ${horoscope.todo.join(", ")}`
     ]);
+    await roam42.shabegom.section("#Pattern 🧩", `> ${pattern}`);
     // Shakespeare
     await roam42.shabegom.section("#Shakespeare", shakespeare);
 

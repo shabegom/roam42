@@ -12,6 +12,11 @@
       res.json()
     );
 
+  roam42.shabegom.pattern = async () =>
+    await fetch(`https://shabegom-roam-helpers.glitch.me/pattern`).then(res =>
+      res.json()
+    );
+
   roam42.shabegom.shakespeare = async () =>
     await fetch("https://shabegom-roam-helpers.glitch.me/shakespeare").then(
       res => res.json()
