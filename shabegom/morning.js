@@ -40,9 +40,9 @@
     // Horoscope
     await roam42.shabegom.multiSection("#Horoscope 🐐", [
       `> ${horoscope.summary}`,
-      `**Do:** ${horoscope.todo.join(", ")}`
+      `**Do:** ${horoscope.todo.join(", ")}`,
+      `> ${pattern.summary}`
     ]);
-    await roam42.shabegom.section("#Pattern 🧩", `> ${pattern.summary}`);
     // Shakespeare
     await roam42.shabegom.section("#Shakespeare", shakespeare);
 
