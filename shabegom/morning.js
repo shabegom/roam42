@@ -42,7 +42,7 @@
       `> ${horoscope.summary}`,
       `**Do:** ${horoscope.todo.join(", ")}`
     ]);
-    await roam42.shabegom.section("#Pattern 🧩", `> ${pattern}`);
+    await roam42.shabegom.section("#Pattern 🧩", `> ${pattern.summary}`);
     // Shakespeare
     await roam42.shabegom.section("#Shakespeare", shakespeare);
 
