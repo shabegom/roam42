@@ -76,7 +76,7 @@
     const page = await roam42.common.getPageNamesFromBlockUidList([ref]);
     await roam42.shabegom.multiSection("Read Me!", [
       `[[${page[0][1].title}]]`,
-      `{next:42SmartBlock:Read Later}}`
+      `{{next:42SmartBlock:Read Later}}`
     ]);
 
     // Pinboard
