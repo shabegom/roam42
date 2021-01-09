@@ -74,12 +74,18 @@
     // Read Later Link
     const ref = await roam42.smartBlocks.getRandomBlocksMention("readlater");
     const page = await roam42.common.getPageNamesFromBlockUidList([ref]);
-    await roam42.shabegom.section("Read Me!", `[[${page[0][1].title}]]`);
+    await roam42.shabegom.multiSection("Read Me!", [
+      `[[${page[0][1].title}]]`,
+      `{next:42SmartBlock:Read Later}}`
+    ]);
 
     // Pinboard
     await roam42.shabegom.header("#pinboard");
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
       pinboard[0].page
+    );
+    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+      `{{next link:42SmartBlock:Latest Pinboard Link}}`
     );
     await roam42.smartBlocks.outputArrayWrite();
     await roam42.common.sleep(1000);
@@ -97,6 +103,7 @@
       await roam42.smartBlocks.outputArrayWrite();
       await roam42.common.sleep(1000);
       await roam42KeyboardLib.pressEsc();
+      await roam42.common.sleep(1000);
       await history.go(-1);
     } else {
       await history.go(-1);
