@@ -48,15 +48,14 @@
     const untetheredQuote = await roam42.common.getRandomBlockFromPage(
       "The Untethered Soul"
     );
-    await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+    await roam42.shabegom.section(
+      "[[The Untethered Soul]]",
       `> ((${untetheredQuote}))\n - [[Michael Singer]]`
     );
-    await roam42.smartBlocks.outputArrayWrite();
     try {
       const stoic = await roam42.shabegom.stoic();
       await roam42.help.displayMessage("Stoic Fetched", 2000);
-      await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(stoic);
-      await roam42.smartBlocks.outputArrayWrite();
+      await roam42.shabegom.section("Stoic", stoic);
     } catch (e) {
       console.log("stoic failed");
     }
@@ -64,10 +63,10 @@
     try {
       const buddha = await roam42.shabegom.quote("author", "gautama+buddha");
       await roam42.help.displayMessage("Buddha Fetched", 2000);
-      await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+      await roam42.shabegom.section(
+        "Buddha",
         `> ${buddha.quote} \n ${buddha.source} `
       );
-      await roam42.smartBlocks.outputArrayWrite();
     } catch (e) {
       console.log("buddha failed");
     }
@@ -78,14 +77,13 @@
         roam42.shabegom.word()
       );
       await roam42.help.displayMessage("Quote Fetched", 2000);
-      await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
+      await roam42.shabegom.section(
+        "Quote",
         `> ${quote.quote} \n ${quote.source} `
       );
-      await roam42.smartBlocks.outputArrayWrite();
     } catch (e) {
       console.log("random quote failed");
     }
-    roam42.shabegom.unTab();
 
     // Religion
     try {
