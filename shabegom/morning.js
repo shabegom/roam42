@@ -51,10 +51,12 @@
     await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
       `> ((${untetheredQuote}))\n - [[Michael Singer]]`
     );
+    await roam42.smartBlocks.outputArrayWrite();
     try {
       const stoic = await roam42.shabegom.stoic();
       await roam42.help.displayMessage("Stoic Fetched", 2000);
       await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(stoic);
+      await roam42.smartBlocks.outputArrayWrite();
     } catch (e) {
       console.log("stoic failed");
     }
@@ -65,6 +67,7 @@
       await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
         `> ${buddha.quote} \n ${buddha.source} `
       );
+      await roam42.smartBlocks.outputArrayWrite();
     } catch (e) {
       console.log("buddha failed");
     }
@@ -78,6 +81,7 @@
       await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
         `> ${quote.quote} \n ${quote.source} `
       );
+      await roam42.smartBlocks.outputArrayWrite();
     } catch (e) {
       console.log("random quote failed");
     }
