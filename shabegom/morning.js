@@ -45,7 +45,6 @@
     }
 
     // Quotes Start
-    roam42.shabegom.header("#Quotes");
     const untetheredQuote = await roam42.common.getRandomBlockFromPage(
       "The Untethered Soul"
     );
