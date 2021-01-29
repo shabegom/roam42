@@ -45,28 +45,47 @@
     }
 
     // Quotes Start
+    roam42.shabegom.header("#Quotes");
+    const untetheredQuote = await roam42.common.getRandomBlockFromPage(
+      "The Untethered Soul"
+    );
+    roam42.shabegom.section(
+      "[[The Untethered Soul]]",
+      `> ((${untetheredQuote}))\n - [[Michael Singer]]`
+    );
     try {
-      const untetheredQuote = await roam42.common.getRandomBlockFromPage(
-        "The Untethered Soul"
-      );
       const stoic = await roam42.shabegom.stoic();
       await roam42.help.displayMessage("Stoic Fetched", 2000);
+      roam42.shabegom.section("[[Stoic]]", stoic);
+    } catch (e) {
+      console.log("stoic failed");
+    }
+
+    try {
       const buddha = await roam42.shabegom.quote("author", "gautama+buddha");
       await roam42.help.displayMessage("Buddha Fetched", 2000);
+      roam42.shabegom.section(
+        "[[Buddha]]",
+        `> ${buddha.quote} \n ${buddha.source} `
+      );
+    } catch (e) {
+      console.log("buddha failed");
+    }
+
+    try {
       const quote = await roam42.shabegom.quote(
         "title",
         roam42.shabegom.word()
       );
       await roam42.help.displayMessage("Quote Fetched", 2000);
-      await roam42.shabegom.multiSection("#Quotes", [
-        `> ((${untetheredQuote}))\n - [[Michael Singer]]`,
-        stoic,
-        `> ${buddha.quote} \n ${buddha.source} `,
+      roam42.shabegom.section(
+        "Random Quote",
         `> ${quote.quote} \n ${quote.source} `
-      ]);
+      );
     } catch (e) {
-      console.log("quotes failed");
+      console.log("random quote failed");
     }
+    roam42.shabegom.unTab();
 
     // Religion
     try {
