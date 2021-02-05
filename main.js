@@ -3,6 +3,7 @@
 
 if (typeof window.roam42 == "undefined") {
     // Load in custom Shabegom Stuff
+    setTimeout(() => {
     roam42.loader.addScriptToPage("shabegom", `https://shabegom42.glitch.me/shabegom/main.js`);
     roam42.loader.addScriptToPage("utils", `https://shabegom42.glitch.me/shabegom/utils.js`);
     roam42.loader.addScriptToPage(
@@ -17,6 +18,7 @@ if (typeof window.roam42 == "undefined") {
       "morning",
       `https://shabegom42.glitch.me/shabegom/morning.js`
     );
+}, 2000)
 
 } else {
     roam42.loader.addScriptToPage("shabegom", `https://shabegom42.glitch.me/shabegom/main.js`);
