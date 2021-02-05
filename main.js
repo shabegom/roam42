@@ -28,7 +28,7 @@
 if( typeof window.roam42 == 'undefined' ) {
 
   window.roam42     =   {};
-  roam42.buildID = 'Roam<sup>42</sup> 2020-12-30 (Charlie) ';
+  roam42.buildID = 'Roam<sup>42</sup> 2021-02-02 (Charlie) ';
 
   roam42.host    = document.currentScript.src.replace('main.js','');
 
@@ -61,13 +61,15 @@ if( typeof window.roam42 == 'undefined' ) {
       addElementToPage(Object.assign(document.createElement('link'),{href:cssToAdd, rel: 'stylesheet'} ) , tagId, 'text/css');
     }
 
+
   })();
 
   // ****************************************************
   // Load roam42 components
   // ****************************************************
 
-  ( ()=>{
+  ( async ()=>{
+
 
     roam42.loader.addScriptToPage( 'libs',  roam42.host + 'dist/libs.js'  );
     roam42.loader.addCSSToPage( 'cssLibs',  roam42.host + 'dist/libs.css' );
@@ -76,15 +78,15 @@ if( typeof window.roam42 == 'undefined' ) {
        roam42.loader.addCSSToPage( 'styleRM',           roam42.host + 'css/styleRM.css'           );
     roam42.loader.addScriptToPage( 'commonFunctions',   roam42.host + 'common/commonFunctions.js' );
     roam42.loader.addScriptToPage( 'commonDatalog',     roam42.host + 'common/commonDatalog.js  ' );
-    roam42.loader.addScriptToPage( "settings",          roam42.host + 'ext/settings.js'           );
     roam42.loader.addScriptToPage( 'jumpNav'  ,         roam42.host + 'ext/jumpNav.js'            );
     roam42.loader.addScriptToPage( 'message-startup',   roam42.host + 'common/messages.js'        );
 
     //extension modules
+    roam42.loader.addScriptToPage( "settings",          roam42.host + 'ext/settings.js'           );
     roam42.loader.addScriptToPage( 'dateProcessing',    roam42.host + 'ext/dateProcessing.js'     );
     roam42.loader.addScriptToPage( 'r42kb_lib',         roam42.host + 'common/r42kb_lib.js'       );
     roam42.loader.addScriptToPage( 'smartBlocks',       roam42.host + 'ext/smartBlocks.js'        );
-    roam42.loader.addScriptToPage( 'templatePoc',       roam42.host + 'ext/templatepoc.js'        );
+//    roam42.loader.addScriptToPage( 'templatePoc',       roam42.host + 'ext/templatepoc.js'        );
     roam42.loader.addScriptToPage( 'jumpToDate',        roam42.host + 'ext/jumpToDate.js'         );
     roam42.loader.addScriptToPage( 'autocomplete',      roam42.host + 'ext/autoComplete.js'       );
     roam42.loader.addScriptToPage( 'privacyMode',       roam42.host + 'ext/privacyMode.js'        );
@@ -114,7 +116,7 @@ if( typeof window.roam42 == 'undefined' ) {
 
     var loadingCounter = 0;
     
-    const interval = setInterval( ()=> {
+    const interval = setInterval( async ()=> {
       if (roam42.keyevents) {
         clearInterval(interval);
         roam42.keyevents.loadKeyEvents();
@@ -126,17 +128,17 @@ if( typeof window.roam42 == 'undefined' ) {
         roam42.jumpnav.loadJumpNav();
         try {
           if ( device.mobile() == false && window === window.parent  ) {
-            try { roam42.dailyNotesPopup.component.initialize(); } catch(e){};
+            try { await roam42.dailyNotesPopup.component.initialize(); } catch(e){};
           }
         } catch(e) {}
         try { roam42.roam42Menu.initialize();                } catch(e){};          
       } else {
-        if(loadingCounter>60)
+        if(loadingCounter>30)
           clearInterval(interval);
         else
           loadingCounter += 1;
       }
-    }, 1000);
+    }, 2000);
     
   })();
 

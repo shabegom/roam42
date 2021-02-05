@@ -7,7 +7,7 @@
       valueArray.push({key: 'tomorrow (42)',   icon:'time',    value: 'tomorrow', processor:'date'});
       valueArray.push({key: 'yesterday (42)',  icon:'time',     value: 'yesterday', processor:'date'});
       ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].forEach(  (e)=>{
-        valueArray.push({key: `${e} (42)`,       icon:'time',   value: `${e}`,      processor:'date'});
+        valueArray.push({key: `This ${e} (42)`,  icon:'time',   value: `This ${e}`,      processor:'date'});
         valueArray.push({key: `Last ${e} (42)`,  icon:'time',   value: `Last ${e}`, processor:'date'});
         valueArray.push({key: `Next ${e} (42)`,  icon:'time',   value: `Next ${e}`, processor:'date'});
       });
@@ -66,6 +66,8 @@
                              help:'<b>CONCAT</b><br/>Combines a comma separated list<br/> of strings into one string<br/><br/>1: comma separated list'});
       valueArray.push({key: '<% CURRENTBLOCKREF: %> (SmartBlock Command)',    icon:'gear', value: '<%CURRENTBLOCKREF:&&&%>',    processor:'static',
                              help:'<b>CURRENTBLOCKREF</b><br/>Sets a variable to the <br/>block UID for the current block<br/><br/>1. Variable name'});
+      valueArray.push({key: '<% CURRENTPAGENAME: %> (SmartBlock Command)',    icon:'gear', value: '<%CURRENTPAGENAME%>',    processor:'static',
+                             help:'<b>CURRENTPAGENAME</b><br/>Returns the current page name the smart block is running in.'});
       valueArray.push({key: '<% DATE: %> dd (SmartBlock Command)',               icon:'gear', value: '<%DATE:&&&%>',           processor:'static',
                              help:'<b>DATE</b><br/>Returns a Roam formatted<br/>dated page reference.<br/><br/>1: NLP expression<br/>2: optional: format for returned <br/>date, example: YYYY-MM-DD'});
       valueArray.push({key: '<% EXIT %> (SmartBlock Command)',               icon:'gear', value: '<%EXIT%>',               processor:'static',
@@ -210,6 +212,18 @@
         if(vValue==undefined) vValue = `--> Variable ${commandToProcess} not SET <--`
         return vValue;
       });
+      textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%CURRENTPAGENAME\%\>)/g, async (match) => {
+        const container = document.activeElement.closest(".roam-log-page") 
+          || document.activeElement.closest(".rm-sidebar-outline") 
+          || document.activeElement.closest(".roam-article") 
+          || document;
+        const heading = container.getElementsByClassName("rm-title-display")[0] 
+          || container.getElementsByClassName("rm-zoom-item-content")[0];
+        return  Array.from(heading.childNodes).find(
+          (n) => n.nodeName === "#text" || n.nodeName === "SPAN"
+        ).textContent;
+				return x;
+      });			
       textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%CLIPBOARDPASTETEXT\%\>)/g, async (match, name)=>{
         var cb = await navigator.clipboard.readText();
         await roam42.common.sleep(50);
@@ -322,7 +336,13 @@
 
         textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%IFDAYOFWEEK:)(\s*[\S\s]*?)(\%\>)/g, async (match, name)=>{
           var commandToProcess = match.replace('<%IFDAYOFWEEK:','').replace('%>','').trim();
-          var day = String(chrono.parseDate(roam42.dateProcessing.parseTextForDates('today')).getDay());
+          var day = '';
+					try { //try for "smart date" in context
+						day = String(chrono.parseDate(roam42.dateProcessing.parseTextForDates('today')).getDay());
+					} catch(e) {
+						// fall back to today
+						day = String(chrono.parseDate('today').getDay());
+					}
           if(day=='0') day='7'; //sunday
           if(commandToProcess.replaceAll(' ','').split(',').includes(day))
             return ''; //
@@ -331,7 +351,13 @@
         });
         textToProcess = await roam42.common.replaceAsync(textToProcess, /(\<\%IFDAYOFMONTH:)(\s*[\S\s]*?)(\%\>)/g, async (match, name)=>{
           var commandToProcess = match.replace('<%IFDAYOFMONTH:','').replace('%>','').trim();
-          var day = String(chrono.parseDate(roam42.dateProcessing.parseTextForDates('today')).getDate());;
+          var day = '';
+					try { //try for "smart date" in context
+						day = String(chrono.parseDate(roam42.dateProcessing.parseTextForDates('today')).getDate());
+					} catch(e) {
+						// fall back to today
+						day = String(chrono.parseDate('today').getDate());
+					}
           if(commandToProcess.replaceAll(' ','').split(',').includes( day ) )
             return ''; //
           else
