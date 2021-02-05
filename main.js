@@ -2,12 +2,10 @@ const addElementToPage = (element, tagId, typeT) => {
   try {
     document.getElementById(tagId).remove();
   } catch (e) {} //Delete any existing reference
-  if (disabledFeatures && disabledFeatures.indexOf(tagId) > -1) {
-    return;
-  } //Exit if disabled
   Object.assign(element, { type: typeT, async: false, tagId: tagId });
   document.getElementsByTagName("head")[0].appendChild(element);
 };
+
 const addScriptToPage = (tagId, script) => {
   addElementToPage(
     Object.assign(document.createElement("script"), { src: script }),
