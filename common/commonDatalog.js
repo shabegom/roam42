@@ -2,11 +2,98 @@
 
 (()=>{
 
+<<<<<<< HEAD
   roam42.common.getBlockParentUids = async (uid) => {
     try {
       var parentUIDs = await window.roamAlphaAPI.q(`[:find (pull ?block [{:block/parents [:block/uid]}]) :in $ [?block-uid ...] :where [?block :block/uid ?block-uid]]`,[uid])[0][0];
       var UIDS = parentUIDs.parents.map(e=> e.uid)
       UIDS.shift();
+=======
+	roam42.common.createUid = ()=>{
+		//based on https://github.com/ai/nanoid#js version 3.1.2
+		//Roam Research confirmed this library, 9 characters long
+		let nanoid=(t=21)=>{let e="",r=crypto.getRandomValues(new Uint8Array(t));for(;t--;){let n=63&r[t];e+=n<36?n.toString(36):n<62?(n-26).toString(36).toUpperCase():n<63?"_":"-"}return e};
+		return nanoid(9);
+	}
+
+	//API DOCS: https://roamresearch.com/#/app/help/page/0Xd0lmIrF
+
+	roam42.common.createBlock = async (parent_uid, block_order, block_string)=> {
+		parent_uid = parent_uid.replace('((','').replace('))','');
+		let newUid = roam42.common.createUid();
+		await window.roamAlphaAPI.createBlock(
+					{	location: {	"parent-uid": parent_uid, order: block_order }, 
+						block: 		{ string: block_string.toString() , uid: newUid}
+					});
+		await roam42.common.sleep(10); //seems a brief pause is need for DB to register the write
+		return newUid;
+	}
+
+	roam42.common.createSiblingBlock = async (fromUID, newBlockText, bBelow = true )=> {
+		//fromUID -- adds at sibling level below this block {order: 2, parentUID: "szmOXpDwT"}
+		//this is not an efficient method for bulk inserting
+		fromUID = fromUID.replace('((','').replace('))','');
+		var blockInfo = await roam42.common.getDirectBlockParentUid(fromUID);
+		var orderValue = bBelow ?  1 : 0;
+		return await roam42.common.createBlock( blockInfo.parentUID, Number(blockInfo.order) + orderValue, newBlockText.toString() );
+	}
+
+	roam42.common.batchCreateBlocks = async (parent_uid, starting_block_order, string_array_to_insert)=> {
+		parent_uid = parent_uid.replace('((','').replace('))','');
+		await string_array_to_insert.forEach( async (item, counter) => {
+				await roam42.common.createBlock(parent_uid, counter+starting_block_order, item.toString()) 
+		});
+	}
+
+	roam42.common.moveBlock = async (parent_uid, block_order, block_to_move_uid)=> {
+		parent_uid = parent_uid.replace('((','').replace('))','');
+		return window.roamAlphaAPI.moveBlock(
+						{	location: {	"parent-uid": parent_uid, order: block_order }, 
+							block: 		{ uid: block_to_move_uid}
+						});
+	}	
+	roam42.common.updateBlock = async (block_uid, block_string, block_expanded=true )=> {
+		block_uid = block_uid.replace('((','').replace('))','');
+		return window.roamAlphaAPI.updateBlock(
+						{	block: { uid: block_uid, string: block_string.toString(), open: block_expanded } });
+	}
+
+	roam42.common.deleteBlock = async (block_uid)=> {
+		block_uid = block_uid.replace('((','').replace('))','');
+		return window.roamAlphaAPI.deleteBlock({block:{uid:block_uid}});
+	}
+	
+	roam42.common.createPage = async (page_title)=> {
+		return window.roamAlphaAPI.createPage({page:{title:page_title.toString() }});
+	}
+
+	roam42.common.updatePage = async (page_uid, page_new_title)=> {
+		return window.roamAlphaAPI.updatePage({page:{uid:page_uid, title: page_new_title}});
+	}		
+
+	roam42.common.deletePage = async (page_uid)=> {
+		return window.roamAlphaAPI.deletePage({page:{uid:page_uid}});
+	}		
+
+
+	//returns the direct parent block  {order: 2, parentUID: "szmOXpDwT"} 
+  roam42.common.getDirectBlockParentUid = async (uid) => {
+		var r = await window.roamAlphaAPI.q(`[:find ?uid ?order 
+							:where  [?cur_block :block/uid "${uid}"]
+											[?cur_block :block/order ?order]
+											[?parent :block/children ?cur_block]
+											[?parent :block/uid ?uid]
+											[?cur_block :block/page ?page]]`);
+		return r.length>0 ? {order: r[0][1], parentUID: r[0][0] } : null;
+  }
+
+	//gets all parent blocks up to the root
+  roam42.common.getBlockParentUids = async (uid) => {
+    try {
+      var parentUIDs = await window.roamAlphaAPI.q(`[:find (pull ?block [{:block/parents [:block/uid]}]) :in $ [?block-uid ...] :where [?block :block/uid ?block-uid]]`,[uid])[0][0];
+			var UIDS = parentUIDs.parents.map(e=> e.uid)
+			UIDS.shift();
+>>>>>>> master
       return await roam42.common.getPageNamesFromBlockUidList(UIDS)
     } catch (e) { return ''; }
   }
@@ -32,6 +119,7 @@
     return uid;
   }
 
+<<<<<<< HEAD
   roam42.common.getBlockInfoByUID = async (uid, withChildren=false)=>{
     try {
       let q = `[:find (pull ?page
@@ -39,6 +127,16 @@
                       :entity/attrs :block/open :block/text-align :children/view-type
                       :block/order
                       ${withChildren ? '{:block/children ...}' : '' }
+=======
+  roam42.common.getBlockInfoByUID = async (uid, withChildren=false, withParents=false)=>{
+    try {
+      let q = `[:find (pull ?page
+                     [:node/title :block/string :block/uid :block/heading :block/props 
+                      :entity/attrs :block/open :block/text-align :children/view-type
+                      :block/order
+                      ${withChildren ? '{:block/children ...}' : '' }
+                      ${withParents ? '{:block/parents ...}' : '' }
+>>>>>>> master
                      ])
                   :where [?page :block/uid "${uid}"]  ]`;
         var results = await window.roamAlphaAPI.q(q);
