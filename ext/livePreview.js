@@ -9,20 +9,9 @@
 
 
 // roam42.livePreview
-(async ()=>{
+(()=>{
 
   roam42.livePreview = {};
-  roam42.livePreview.state = await roam42.settings.get('LivePreview');
-  roam42.livePreview.browserHeight = await roam42.settings.get('LivePreviewHeight');
-  roam42.livePreview.browserWidth  = await roam42.settings.get('LivePreviewWidth');
-  roam42.livePreview.delay         = Number(await roam42.settings.get('LivePreviewDelay '));
-
-  if(roam42.livePreview.browserHeight==null) roam42.livePreview.browserHeight = '500px';
-  if(roam42.livePreview.browserWidth==null)  roam42.livePreview.browserWidth  = '500px';
-  if(roam42.livePreview.delay==null)         roam42.livePreview.delay = '100';
-  
-  if( roam42.livePreview.state == 'off') 
-    return;
 
   roam42.livePreview.roam42LivePreviewState = 0 //off by default
 
@@ -116,7 +105,6 @@
 
   }
 
-  
     if( window === window.parent  ){
 
       'use strict';
@@ -185,10 +173,7 @@
       const createPreviewIframe = () => {
         const iframe = document.createElement('iframe');
         // const url = getPageUrl('search');
-        let url = baseUrl().toString().replace('/page','');
-        if(roam42.livePreview.state=='optimized')
-          url = url + '?disablejs=true';
-        
+        const url = baseUrl().toString().replace('/page','')
         const isAdded = (pageUrl) => !!document.querySelector(`[src="${pageUrl}"]`);
         if (isAdded(url)) {
           return;
@@ -279,13 +264,13 @@
         let specialDelayMouseOut = false   //used to control the mouseout event in some scenarios
         let specialDelayTimeOutAmount = 200
         const previewIframe = createPreviewIframe();
-        var delayTimer = roam42.livePreview.delay;
+        var delayTimer = 100;
 
         //get configuration setting from roam/js
         if(window.roam42LivePreview) {
           delayTimer = window.roam42LivePreview.delay == undefined ? delayTimer : window.roam42LivePreview.delay
         }
-        
+
         roam42.livePreview.roam42LivePreviewState = roam42.livePreview.getRoamLivePreviewState();  //get current state of live preview
 
         document.addEventListener('mouseover', (e) => {
@@ -386,13 +371,12 @@
             if ((!isAdded(url) || !isVisible(url)) && previewIframe) {
               setTimeout(()=> {previewIframe.src  = url}, 100)
               previewIframe.style.pointerEvents = 'none';
-                            
               if(window.roam42LivePreview) {
                 previewIframe.style.height = window.roam42LivePreview.height == undefined  ? '500px' : window.roam42LivePreview.height
                 previewIframe.style.width  = window.roam42LivePreview.width  == undefined  ? '500px' : window.roam42LivePreview.width
               } else {
-                previewIframe.style.height = roam42.livePreview.browserHeight;
-                previewIframe.style.width  = roam42.livePreview.browserWidth;
+                previewIframe.style.height = '500px'
+                previewIframe.style.width  = '500px'
               }
              }
             if (!popupTimeout) {

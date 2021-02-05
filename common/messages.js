@@ -5,7 +5,16 @@
 // roam42.help
 (()=>{
   roam42.help = {};
-	
+
+  roam42.help.keyboardHandlerMessages = ev => {
+    if (ev.altKey && ev.shiftKey && ev.code=='KeyH' ) {
+      ev.stopImmediatePropagation();
+      ev.preventDefault();
+      roam42.quickRef.component.toggleQuickReference();
+      return true
+    }
+  }
+
   roam42.help.displayMessage = (sMessage, delayTime) => {
     iziToast.show({
       message: sMessage,

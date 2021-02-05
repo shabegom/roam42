@@ -19,3 +19,9 @@
     setTimeout(async ()=>  console.log( await roam42.settings.get("SmartBlockTrigger") ),1000)
   };
 })();
+
+
+
+
+
+

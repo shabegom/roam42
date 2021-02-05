@@ -58,7 +58,8 @@
       await roam42.smartBlocks.activeWorkflow.arrayToWrite.push({'text': blockText, reprocess: reprocessBlock  });
     }
 
-    const insertSnippetIntoBlock = async ( textToInsert, removeIfCursor = true, startPosistionOffset=2, caretRepositionDelay=100 )=> {
+    const insertSnippetIntoBlock = async ( textToInsert, removeIfCursor = true, startPosistionOffset=2 )=> {
+      console.log('removeIfCursor',removeIfCursor)
       setTimeout(async()=>{
         var txtarea = document.activeElement;
         var strPos = txtarea.selectionStart;
@@ -77,11 +78,12 @@
         if(newValue=='') newValue=' ';
         var setValue = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
         setValue.call(txtarea, newValue );
+        console.log('new value set')
         var e = new Event('input', { bubbles: true });
         txtarea.dispatchEvent(e);
         if(startPos>=0) { 
-          await roam42.common.sleep(caretRepositionDelay);
-          document.activeElement.setSelectionRange(startPos,startPos);          
+          await roam42.common.sleep(700);
+          document.activeElement.setSelectionRange(startPos,startPos);
         }
       },50)
     }
@@ -149,25 +151,23 @@
         for(let sb of roam42.smartBlocks.activeWorkflow.arrayToWrite) {
           var textToInsert = sb.text;
           if(sb.reprocess == true) textToInsert =  await roam42.smartBlocks.proccessBlockWithSmartness(textToInsert);
-          if(!textToInsert.includes(roam42.smartBlocks.exclusionBlockSymbol)) {   
-            var setValue = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
-            let txtarea = document.querySelector("textarea.rm-block-input");
-            setValue.call(txtarea, textToInsert );
-            var e = new Event('input', { bubbles: true });
-            txtarea.dispatchEvent(e);
-            //PRESS ENTER
-            if(blocksInserted!=countOfblocksToInsert){
-              blocksInserted+=1;
-              let currentBlockId = document.querySelector('textarea.rm-block-input').id
+          var setValue = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+          let txtarea = document.querySelector("textarea.rm-block-input");
+          setValue.call(txtarea, textToInsert );
+          var e = new Event('input', { bubbles: true });
+          txtarea.dispatchEvent(e);
+          //PRESS ENTER
+          if(blocksInserted!=countOfblocksToInsert){
+            blocksInserted+=1;
+            let currentBlockId = document.querySelector('textarea.rm-block-input').id
+            await roam42KeyboardLib.pressEnter(50);
+            await roam42.common.sleep(100);
+            if( currentBlockId == document.querySelector('textarea.rm-block-input').id ) {
               await roam42KeyboardLib.pressEnter(50);
-              await roam42.common.sleep(100);
-              if( currentBlockId == document.querySelector('textarea.rm-block-input').id ) {
-                await roam42KeyboardLib.pressEnter(50);
-              }
             }
-            if(blocksInserted % 10 == 0) //SmartBlocks coffee break to allow Roam to catch its breath
-                await roam42.common.sleep(100);
           }
+          if(blocksInserted % 10 == 0) //SmartBlocks coffee break to allow Roam to catch its breath
+              await roam42.common.sleep(100);
         }
         //reset for next run
         await roam42.common.sleep(100);
@@ -183,7 +183,7 @@
       return ' ';
     };
 
-    roam42.smartBlocks.sbBomb = async (item, skipCursorRelocation=false, sbCallingSB=false, sbButton=false)=>{
+    roam42.smartBlocks.sbBomb = async (item, skipCursorRelocation=false, sbCallingSB=false)=>{
         //make sure we are in the textarea that started this insert (tribute menu may have closed focus on text area)
         var removeTributeTriggerSpacer=2;
         //by default we don't use date references from the daily note pages.
@@ -218,11 +218,11 @@
               roam42.smartBlocks.activeWorkflow.startingBlockTextArea = document.activeElement.id;
               roam42.smartBlocks.activeWorkflow.startingBlockContents = document.activeElement.value;
             }
-            if(item.original.processor=='date')  {skipCursorRelocation=true; insertSnippetIntoBlock( await roam42.dateProcessing.parseTextForDates(item.original.value).trim() )};
-            if(item.original.processor=='function') {skipCursorRelocation=true; await item.original.value()};
-            if(item.original.processor=='static') {skipCursorRelocation=true; insertSnippetIntoBlock( item.original.value, false )};
-            if(item.original.processor=='randomblock') {skipCursorRelocation=true; insertSnippetIntoBlock( '((' + await roam42.common.getRandomBlock(1) + '))' )};
-            if(item.original.processor=='randompage') {skipCursorRelocation=true; insertSnippetIntoBlock(await roam42.smartBlocks.getRandomPage())};
+            if(item.original.processor=='date')   insertSnippetIntoBlock( await roam42.dateProcessing.parseTextForDates(item.original.value).trim() );
+            if(item.original.processor=='function') await item.original.value();
+            if(item.original.processor=='static') insertSnippetIntoBlock( item.original.value, false );
+            if(item.original.processor=='randomblock') insertSnippetIntoBlock( '((' + await roam42.common.getRandomBlock(1) + '))' );
+            if(item.original.processor=='randompage') insertSnippetIntoBlock(await roam42.smartBlocks.getRandomPage());
             if(item.original.processor=='blocks') {
 
               var results = await roam42.common.getBlockInfoByUID( item.original.value, true );
@@ -237,14 +237,13 @@
               //loop through array outline and insert into Roam
               if (results[0][0].children.length == 1 && !results[0][0].children[0].children) {
                 //has no children, just insert text into block and safe it
-                skipCursorRelocation=true;
                 var processedText = await roam42.smartBlocks.proccessBlockWithSmartness( results[0][0].children[0].string);
-                // processedText = await roam42.smartBlocks.processBlockAfterBlockInserted(processedText);
+                processedText = await roam42.smartBlocks.processBlockAfterBlockInserted(processedText);
                 roam42.smartBlocks.activeWorkflow.currentSmartBlockBlockBeingProcessed = processedText;
                 roam42.smartBlocks.activeWorkflow.currentSmartBlockTextArea = document.activeElement.id;
                 if( !processedText.includes(roam42.smartBlocks.exclusionBlockSymbol) )
                   if(!processedText.includes(roam42.smartBlocks.replaceFirstBlock)) {
-                    await insertSnippetIntoBlock( processedText, true, removeTributeTriggerSpacer, 1000 );
+                    await insertSnippetIntoBlock( processedText, true, removeTributeTriggerSpacer );
                     await roam42.smartBlocks.processBlockAfterBlockInserted(processedText);
                     await roam42.smartBlocks.processBlockOnBlockExit();
                   }
@@ -283,12 +282,11 @@
 
                     if( !insertText.includes(roam42.smartBlocks.exclusionBlockSymbol) ) {
                       if (firstBlock==true && document.activeElement.value.length>2) {
-												//block contains text already
                         firstBlock = false;
                         insertText = await roam42.smartBlocks.processBlockAfterBlockInserted(insertText);
                         var txtarea = document.querySelector("textarea.rm-block-input");
                         var strPos = txtarea.selectionStart;
-                        var front = sbCallingSB || sbButton ? txtarea.value.substring(0, strPos) : txtarea.value.substring(0, strPos-2);
+                        var front = txtarea.value.substring(0, strPos);
                         var back = txtarea.value.substring(strPos, txtarea.value.length);
                         var setValue = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
                         setValue.call(txtarea, front + insertText + back );
@@ -381,15 +379,11 @@
 
                }
 
-							//END of processing of blocks in loop
-							// FOCUS on block
-							if(roam42.smartBlocks.activeWorkflow.focusOnBlock!='' && skipCursorRelocation==false){
-								await roam42.common.simulateMouseClick(document.getElementById(roam42.smartBlocks.activeWorkflow.focusOnBlock));
-								await roam42.common.sleep(200)
-								await roam42KeyboardLib.simulateKey(79,200,{ctrlKey:true})
-								await roam42.common.sleep(200)
-							}
-							
+                //END of processing of blocks in loop
+                // FOCUS on block
+                if(roam42.smartBlocks.activeWorkflow.focusOnBlock!='' && skipCursorRelocation==false)
+                  await roam42KeyboardLib.simulateKey(79,200,{ctrlKey:true})
+
               //SET cursor location
                if(skipCursorRelocation==false) {
                 roam42.common.simulateMouseClick(document.getElementById(roam42.smartBlocks.activeWorkflow.startingBlockTextArea));
@@ -399,16 +393,16 @@
                         var newValue = document.querySelector('textarea.rm-block-input').value;
                         document.activeElement.value = '';
                         insertSnippetIntoBlock(newValue);
-                      } else {
-                        document.activeElement.setSelectionRange(document.activeElement.value.length,document.activeElement.value.length);
                       }
+                      else
+                        document.activeElement.setSelectionRange(document.activeElement.value.length,document.activeElement.value.length);
                     } catch(e) {}
                   },200);
                }
                // NOCURSOR - dont show a curosr after it runs
                if(currentSmartBlockCommand.includes('<%NOCURSOR%>')){
                   setTimeout(async ()=>{ //let other commands process before exiting block edit
-                    // await roam42.common.sleep(500);
+                    await roam42.common.sleep(500);
                     await roam42KeyboardLib.pressEsc(50);
                     await roam42KeyboardLib.pressEsc(50);
                   },400);
@@ -483,8 +477,7 @@
           await roam42.common.sleep(200);
           document.activeElement.setSelectionRange(cursorLocation,cursorLocation);
           await roam42.common.sleep(100);
-					await roam42.smartBlocks.sbBomb({original: sbCommand}, false, false, true)
-          // await blocksToInsert({original: sbCommand});
+          await blocksToInsert({original: sbCommand});
           }
         }
       }

@@ -12,7 +12,7 @@
 
   // Key to start navigation.  Alt + this key will also trigger
   // navigation.
-  const START_NAVIGATE_KEY = 'g';
+  const START_NAVIGATE_KEY = 'g';  //ROAM42 MOD
 
   // Key sequence to navigate to daily notes.
   const DAILY_NOTES_KEY = 'g';
@@ -21,16 +21,13 @@
   const GRAPH_OVERVIEW_KEY = 'o' + ENTER_SYMBOL;
 
   // Key sequence to navigate to all pages view.
-  const ALL_PAGES_KEYS = 'ap';
+  const ALL_PAGES_KEY = 'a';
 
   // Key sequence prefix for sidebar blocks.
   const SIDEBAR_BLOCK_PREFIX = 's';
 
-  // Key sequence prefix for sidebar close buttons.
-  const CLOSE_BUTTON_PREFIX = 'x';
-
   // Key sequence for last block.
-  const LAST_BLOCK_KEY = 'b';
+  const LAST_BLOCK_KEY = 'b';  //ROAM42 MOD
 
   // Key to scroll up a bit.
   const SCROLL_UP_KEY = 'ArrowUp';
@@ -158,13 +155,12 @@
       // Ignore keystrokes pressed with modifier keys, as they might
       // be used by other extensions.
 
-      if (!roamNavigatorEnabled) {
-        // navigator disabled, don't go further
-        return;
-      }
+// ROAM42 MOD START
+      if (!roamNavigatorEnabled) { return }  //navigator disabled, don't go further
 
       if (ev.ctrlKey ||
           (ev.altKey && (isNavigating() || ev.key !== START_NAVIGATE_KEY))) {
+// ROAM42 MOD END
         delete keysToIgnore[ev.key];
         return;
       }
@@ -232,32 +228,26 @@
       debug('DOM mutation. blockHighlighted = ', blockHighlighted,
           'blockWasHighlighted = ', blockWasHighlighted);
       if (isNavigating()) {
-        if (ACTIVATE_ON_NO_FOCUS && roamNavigatorEnabled && blockHighlighted && bodyFocused) {
+        if (ACTIVATE_ON_NO_FOCUS  && roamNavigatorEnabled && blockHighlighted && bodyFocused) {
           handleFocusIn();
         } else {
-          if (!setupNavigateCrashed) {
-            setupNavigate(false);
-          }
+          setupNavigate(false);
           registerScrollHandlers();
         }
-      } else if (ACTIVATE_ON_STARTUP && isReady && !initiatedNavigation && roamNavigatorEnabled) {
-        if (!setupNavigateCrashed) {
-          navigate();
-        }
+      } else if (ACTIVATE_ON_STARTUP && isReady && !initiatedNavigation  && roamNavigatorEnabled) {
+        navigate();
       } else if (ACTIVATE_ON_NO_FOCUS &&
                  !blockHighlighted &&
                  blockWasHighlighted &&
                  bodyFocused) {
         handleFocusOut();
       }
-      if (ACTIVATE_ON_STARTUP && isReady && !initiatedNavigation && roamNavigatorEnabled) {
+      if (ACTIVATE_ON_STARTUP && isReady && !initiatedNavigation  && roamNavigatorEnabled) {
         initiatedNavigation = true;
       }
       blockWasHighlighted = blockHighlighted;
       updateBreadcrumbs();
     });
-
-    window.addEventListener('resize', handleScrollOrResize);
 
     const observer = new MutationObserver(() => {
       if (!domMutationLevel) {
@@ -270,7 +260,7 @@
       attributes: true,
     });
 
-    // Watch for DOM changes, to know when to re-render tips.
+   // Watch for DOM changes, to know when to re-render tips.
     if (ACTIVATE_ON_NO_FOCUS  && roamNavigatorEnabled) {
       document.addEventListener('focusout', (ev) => {
         if (getInputTarget(ev) && document.activeElement === document.body) {
@@ -313,21 +303,21 @@
     }
   }
 
-  function registerScrollHandlers() {
+ function registerScrollHandlers() {
     const rightScroller = getById('roam-right-sidebar-content');
     if (rightScroller) {
-      rightScroller.removeEventListener('scroll', handleScrollOrResize);
-      rightScroller.addEventListener('scroll', handleScrollOrResize);
+      rightScroller.removeEventListener('scroll', handleScroll);
+      rightScroller.addEventListener('scroll', handleScroll);
     }
     let mainScroller = getUniqueClass(document, 'roam-body-main');
     if (mainScroller && mainScroller.firstChild) {
       mainScroller = mainScroller.firstChild;
-      mainScroller.removeEventListener('scroll', handleScrollOrResize);
-      mainScroller.addEventListener('scroll', handleScrollOrResize);
+      mainScroller.removeEventListener('scroll', handleScroll);
+      mainScroller.addEventListener('scroll', handleScroll);
     }
   }
 
-  const handleScrollOrResize = throttle(100, () => {
+  const handleScroll = throttle(20, () => {
     if (isNavigating()) {
       setupNavigate(true);
     }
@@ -363,9 +353,6 @@
   const HINT_TYPED_CLASS = 'roam_navigator_hint_typed';
   const LINK_HINT_CLASS = 'roam_navigator_link_hint';
   const NAVIGATE_CLASS = 'roam_navigator_navigating';
-  const LEFT_SIDEBAR_TOGGLE_CLASS = 'roam_navigator_left_sidebar_toggle';
-  const RIGHT_SIDEBAR_CLOSE_CLASS = 'roam_navigator_right_sidebar_close';
-  const SIDE_PAGE_CLOSE_CLASS = 'roam_navigator_side_page_close';
 
   // MUTABLE. When set, this function should be called when navigate mode
   // finished.
@@ -377,9 +364,6 @@
   // MUTABLE. Prefixes used in last assignment of navigate options to keys.
   let currentNavigatePrefixesUsed = {};
 
-  // MUTABLE. Map from uids to navigate options.
-  let currentUidToNavigateOptionsMap = {};
-
   // MUTABLE. Used to avoid infinite recursion of 'setupNavigate' due to it
   // being called on mutation of DOM that it mutates.
   let oldNavigateOptions = {};
@@ -389,9 +373,6 @@
 
   // MUTABLE. Keys the user has pressed so far.
   let navigateKeysPressed = '';
-
-  // MUTABLE. Whether setupNavigate crashed last time.
-  let setupNavigateCrashed = false;
 
   // Switches to a navigation mode, where navigation targets are annotated
   // with letters to press to click.
@@ -406,7 +387,6 @@
     oldNavigateOptions = {};
     currentNavigateOptions = {};
     currentNavigatePrefixesUsed = {};
-    currentUidToNavigateOptionsMap = {};
     navigateKeysPressed = '';
 
     finishNavigate = () => {
@@ -447,7 +427,7 @@
     debug('Creating navigation shortcut tips');
     try {
       if (!onlyLinks) {
-        const {navigateOptions, navigatePrefixesUsed, uidToNavigateOptionsMap} =
+        const {navigateOptions, navigatePrefixesUsed} =
               collectNavigateOptions();
         // Avoid infinite recursion. See comment on oldNavigateOptions.
         let different = false;
@@ -463,42 +443,29 @@
         }
         currentNavigateOptions = navigateOptions;
         currentNavigatePrefixesUsed = navigatePrefixesUsed;
-        currentUidToNavigateOptionsMap = uidToNavigateOptionsMap;
         oldNavigateOptions = navigateOptions;
         if (different) {
           debug('Different set of navigation options, so re-setting them.');
         } else {
           debug('Same set of navigation options, so not re-rendering.');
-          setupNavigateCrashed = false;
           return;
         }
       }
 
-      // Reset aliasings before populating links.
-      for (const uid of Object.keys(currentUidToNavigateOptionsMap)) {
-        const option = currentUidToNavigateOptionsMap[uid];
-        option.aliased = [];
-      }
-
-      currentLinkOptions = collectLinkOptions(
-          currentNavigateOptions,
-          currentNavigatePrefixesUsed,
-          currentUidToNavigateOptionsMap);
+      currentLinkOptions =
+        collectLinkOptions(currentNavigateOptions, currentNavigatePrefixesUsed);
 
       // Finish navigation immediately if no tips to render.
       if (!rerenderTips(onlyLinks) && finishNavigate) {
         endNavigate();
       }
     } catch (ex) {
-      setupNavigateCrashed = true;
       endNavigate();
       throw ex;
     }
-    setupNavigateCrashed = false;
   }
 
-  function collectNavigateOptions() {
-    const uidToNavigateOptionsMap = {};
+ function collectNavigateOptions() {
     const sidebar = getUniqueClass(document, 'roam-sidebar-container');
     // Initialize a list of elements to bind to keys for
     // navigation. Starts out with some reserved keys that will
@@ -507,66 +474,52 @@
       mustBeKeys: SIDEBAR_BLOCK_PREFIX,
     }, {
       mustBeKeys: LAST_BLOCK_KEY,
-    }, {
-      mustBeKeys: CLOSE_BUTTON_PREFIX,
     }];
 
     // Add top level navigations to the list of navigateItems
-    if (sidebar) {
-      withClass(sidebar, 'log-button', (logButton) => {
-        const text = logButton.innerText;
-        if (text.includes('DAILY NOTES') ||
-            text === DAILY_NOTES_KEY + '\nDAILY NOTES') {
-          const option = {
-            element: logButton,
-            mustBeKeys: DAILY_NOTES_KEY,
-            keepGoing: true,
-            isNavigateOption: true,
-          };
-          navigateItems.push(option);
-          uidToNavigateOptionsMap[DAILY_NOTES_UID] = option;
-        } else if (text.includes('GRAPH OVERVIEW') ||
-                   text === GRAPH_OVERVIEW_KEY + '\nGRAPH OVERVIEW') {
-          const option = {
-            element: logButton,
-            mustBeKeys: GRAPH_OVERVIEW_KEY,
-            keepGoing: true,
-            isNavigateOption: true,
-          };
-          navigateItems.push(option);
-          uidToNavigateOptionsMap[GRAPH_OVERVIEW_UID] = option;
-        } else if (text.includes('ALL PAGES') ||
-                   text === ALL_PAGES_KEYS + '\nALL PAGES') {
-          const option = {
-            element: logButton,
-            mustBeKeys: ALL_PAGES_KEYS,
-            keepGoing: true,
-            isNavigateOption: true,
-          };
-          navigateItems.push(option);
-          uidToNavigateOptionsMap[ALL_PAGES_UID] = option;
-        } else {
-          error('Unhandled .log-button:', text);
-        }
-      });
+    withClass(sidebar, 'log-button', (logButton) => {
+      const text = logButton.innerText;
+      if (text === 'DAILY NOTES' ||
+          text === DAILY_NOTES_KEY + '\nDAILY NOTES') {
+        navigateItems.push({
+          element: logButton,
+          mustBeKeys: DAILY_NOTES_KEY,
+          keepGoing: true,
+        });
+      } else if (text === 'GRAPH OVERVIEW' ||
+                 text === GRAPH_OVERVIEW_KEY + '\nGRAPH OVERVIEW') {
+        navigateItems.push({
+          element: logButton,
+          mustBeKeys: GRAPH_OVERVIEW_KEY,
+          keepGoing: true,
+        });
+      } else if (text.includes('ALL PAGES') ||
+                 text === ALL_PAGES_KEY + '\nALL PAGES') { //42 change - to make work on ipad
+        navigateItems.push({
+          element: logButton,
+          mustBeKeys: ALL_PAGES_KEY,
+          keepGoing: true,
+        });
+      } else {
+        error('Unhandled .log-button:', text);
+      }
+    });
 
-      // Add starred shortcuts to the list of navigateItems
-      withUniqueClass(sidebar, 'starred-pages', all, (starredPages) => {
-        withTag(starredPages, 'a', (item) => {
-          withUniqueClass(item, 'page', all, (page) => {
-            const text = page.innerText;
-            navigateItems.push({
-              element: item,
-              mustBeKeys: null,
-              text: preprocessItemText(text),
-              initials: getItemInitials(text),
-              isNavigateOption: true,
-              keepGoing: true,
-            });
+    // Add starred shortcuts to the list of navigateItems
+    withUniqueClass(sidebar, 'starred-pages', all, (starredPages) => {
+      withTag(starredPages, 'a', (item) => {
+        withUniqueClass(item, 'page', all, (page) => {
+          const text = page.innerText;
+          navigateItems.push({
+            element: item,
+            mustBeKeys: null,
+            text: preprocessItemText(text),
+            initials: getItemInitials(text),
+            keepGoing: true,
           });
         });
       });
-    }
+    });
 
     withUniqueClass(document, 'roam-topbar', all, (topbar) => {
       const buttonClasses = ['bp3-icon-menu', 'bp3-icon-menu-open'];
@@ -576,7 +529,6 @@
           element: button,
           mustBeKeys: LEFT_SIDEBAR_KEY,
           keepGoing: true,
-          extraClasses: [LEFT_SIDEBAR_TOGGLE_CLASS],
         });
       }
     });
@@ -588,7 +540,6 @@
           element: button,
           mustBeKeys: LEFT_SIDEBAR_KEY,
           keepGoing: true,
-          extraClasses: [LEFT_SIDEBAR_TOGGLE_CLASS],
         });
       }
     });
@@ -600,22 +551,6 @@
     // Remove reserved keys.
     delete navigateOptions[SIDEBAR_BLOCK_PREFIX];
     delete navigateOptions[LAST_BLOCK_KEY];
-    delete navigateOptions[CLOSE_BUTTON_PREFIX];
-
-    // For links that have a uid, collect a map from that to the options.
-    for (const keySequence of Object.keys(navigateOptions)) {
-      const option = navigateOptions[keySequence];
-      if (option.element && option.element.attributes['href']) {
-        const href = option.element.attributes['href'].value;
-        if (href[0] === '/') {
-          const uidMatchResult = ID_FROM_HASH_REGEX.exec(href.slice(1));
-          if (uidMatchResult) {
-            const uid = uidMatchResult[1];
-            uidToNavigateOptionsMap[uid] = option;
-          }
-        }
-      }
-    }
 
     // Add key sequences for every block in article.
     const article = getUniqueClass(document, 'roam-article');
@@ -637,20 +572,7 @@
           navigateOptions['sc'] = {
             element: button,
             keepGoing: true,
-            extraClasses: [RIGHT_SIDEBAR_CLOSE_CLASS],
           };
-        });
-        let closeButtonCounter = 0;
-        withClass(rightSidebar, 'bp3-icon-cross', (closeButton) => {
-          if (closeButtonCounter < CLOSE_BUTTON_KEYS.length) {
-            const key = 'x' + CLOSE_BUTTON_KEYS[closeButtonCounter];
-            navigateOptions[key] = {
-              element: closeButton,
-              keepGoing: true,
-              extraClasses: [SIDE_PAGE_CLOSE_CLASS],
-            };
-          }
-          closeButtonCounter++;
         });
       });
     }
@@ -661,7 +583,7 @@
       addBlocks(navigateOptions, allPagesSearch, null, '');
     }
 
-    return {navigateOptions, navigatePrefixesUsed, uidToNavigateOptionsMap};
+    return {navigateOptions, navigatePrefixesUsed};
   }
 
   function findLastBlock(el) {
@@ -704,11 +626,8 @@
     }
   }
 
-  function collectLinkOptions(
-      navigateOptions,
-      navigatePrefixesUsed,
-      uidToNavigateOptionsMap) {
-    const linksByUid = Object.assign({}, uidToNavigateOptionsMap);
+  function collectLinkOptions(navigateOptions, navigatePrefixesUsed) {
+    const linksByUid = {};
 
     // Add key sequences for every link in article.
     const article = getUniqueClass(document, 'roam-article');
@@ -728,10 +647,7 @@
 
     const linkItems = [];
     for (const uid of Object.keys(linksByUid)) {
-      const option = linksByUid[uid];
-      if (!option['isNavigateOption']) {
-        linkItems.push(option);
-      }
+      linkItems.push(linksByUid[uid]);
     }
 
     const {options} =
@@ -741,7 +657,7 @@
   }
 
 
-  function addLinks(linksByUid, navigateOptions, container) {
+ function addLinks(linksByUid, navigateOptions, container) {
     const links = container.querySelectorAll([
       '.rm-page-ref',
       'a',
@@ -834,13 +750,13 @@
       updateBreadcrumbs();
       // ensureSidebarOpen();
       removeOldTips(onlyLinks);
-      for (const k of Object.keys(currentNavigateOptions)) {
-        renderedAny =
-          renderTip(k, currentNavigateOptions[k], onlyLinks) || renderedAny;
+      if (!onlyLinks) {
+        for (const k of Object.keys(currentNavigateOptions)) {
+          renderedAny = renderTip(k, currentNavigateOptions[k]) || renderedAny;
+        }
       }
       for (const k of Object.keys(currentLinkOptions)) {
-        const option = currentLinkOptions[k];
-        renderedAny = renderTip(k, option, false) || renderedAny;
+        renderedAny = renderTip(k, currentLinkOptions[k]) || renderedAny;
       }
     });
     // Boolean result is false if navigation mode should be exited due
@@ -848,25 +764,19 @@
     return onlyLinks || renderedAny;
   }
 
-  function renderTip(key, option, skipRenderingMain) {
+
+  function renderTip(key, option) {
     const prefix = key.slice(0, navigateKeysPressed.length);
     const rest = key.slice(navigateKeysPressed.length);
     if (prefix === navigateKeysPressed) {
       if (option.element) {
-        if (!skipRenderingMain) {
-          renderTipInternal(prefix, rest, option.element, option.extraClasses);
-        }
+        renderTipInternal(prefix, rest, option.element, option.extraClasses);
       } else {
-        error('element not set in', key, option);
+        error('element not set in', option);
       }
       if (option.aliased) {
         for (const el of option.aliased) {
-          // HACK: assumes that all aliases are links, which is
-          // currently true.
-          const extraClasses =
-                option.extraClasses ? [...option.extraClasses] : [];
-          extraClasses.push(LINK_HINT_CLASS);
-          renderTipInternal(prefix, rest, el, extraClasses);
+          renderTipInternal(prefix, rest, el, option.extraClasses);
         }
       }
       return true;
@@ -874,7 +784,7 @@
     return false;
   }
 
-  function renderTipInternal(prefix, rest, el, extraClasses) {
+   function renderTipInternal(prefix, rest, el, extraClasses) {
     const tip = div({'class': HINT_CLASS}, text(rest));
     if (extraClasses) {
       for (const cls of extraClasses) {
@@ -887,17 +797,14 @@
     if (matchingClass('rm-block-text')(el) ||
         el.id === 'block-input-ghost') {
       findParent(el, matchingClass('rm-block-main')).prepend(tip);
-    } else if (extraClasses && extraClasses.findIndex((x) =>
-      x === LEFT_SIDEBAR_TOGGLE_CLASS ||
-                 x === RIGHT_SIDEBAR_CLOSE_CLASS ||
-                 x === SIDE_PAGE_CLOSE_CLASS) >= 0) {
-      // Typically if the parent doesn't exist, then a re-render is
-      // scheduled to properly render the sidebar toggle.
-      if (el.parentElement) {
-        el.parentElement.insertBefore(tip, el);
+    } else if (matchingClass('bp3-button')(el)) {
+      const parent = findParent(el, matchingClass('rm-block-main'));
+      if (parent) {
+        parent.firstElementChild.after(tip);
+      } else {
+        // TODO: Make this case not happen.
+        debug('Couldn\'t find expected parent of left sidebar toggle', el);
       }
-    } else if (matchingClass('bp3-icon-cross')(el)) {
-      el.prepend(tip);
     } else {
       el.prepend(tip);
     }
@@ -917,10 +824,7 @@
   */
 
   function closeSidebarIfOpened() {
-    const bodyMain = getUniqueClass(document, 'roam-body-main');
-    if (bodyMain) {
-      mouseOver(bodyMain);
-    }
+    withUniqueClass(document, 'roam-body-main', all, mouseOver);
   }
 
   // Lowercase and take only alphanumeric.
@@ -958,16 +862,15 @@
   function filterJumpKeys(keys) {
     return keys
         .replace(DAILY_NOTES_KEY, '')
+        .replace(ALL_PAGES_KEY, '')
         .replace(SIDEBAR_BLOCK_PREFIX, '')
-        .replace(LAST_BLOCK_KEY, '')
-        .replace(CLOSE_BUTTON_PREFIX, '');
+        .replace(LAST_BLOCK_KEY, '');
   }
 
   const HOME_ROW_KEYS = 'asdfghjkl';
   const JUMP_KEYS = HOME_ROW_KEYS + 'qwertyuiopzxcvbnm';
   const FILTERED_HOME_ROW_KEYS = filterJumpKeys(HOME_ROW_KEYS);
   const FILTERED_JUMP_KEYS = filterJumpKeys(JUMP_KEYS);
-  const CLOSE_BUTTON_KEYS = '0123456789' + JUMP_KEYS;
 
   // Assign keys to items based on their text.
   function assignKeysToItems(items, otherPrefixesUsed, otherOptions) {
@@ -1133,11 +1036,11 @@
       // hope of finding a more stable option.
       /* eslint-disable */
       if (item.uid &&
-          (addResult(uidToJumpKeys(item.uid, FILTERED_HOME_ROW_KEYS, HOME_ROW_KEYS), item) ||
-           addResult(uidToJumpKeys(item.uid, FILTERED_HOME_ROW_KEYS, JUMP_KEYS), item) ||
-           addResult(uidToJumpKeys(item.uid + '1', FILTERED_HOME_ROW_KEYS, HOME_ROW_KEYS), item) ||
-           addResult(uidToJumpKeys(item.uid + '1', FILTERED_HOME_ROW_KEYS, JUMP_KEYS), item) ||
-           addResult(uidToJumpKeys(item.uid, FILTERED_JUMP_KEYS, JUMP_KEYS), item))) {
+          (addResult(uidToJumpKeys(item.uid, FILTERED_HOME_ROW_KEYS, FILTERED_HOME_ROW_KEYS), item) ||
+           addResult(uidToJumpKeys(item.uid, FILTERED_HOME_ROW_KEYS, FILTERED_JUMP_KEYS), item) ||
+           addResult(uidToJumpKeys(item.uid + '1', FILTERED_HOME_ROW_KEYS, FILTERED_HOME_ROW_KEYS), item) ||
+           addResult(uidToJumpKeys(item.uid + '1', FILTERED_HOME_ROW_KEYS, FILTERED_JUMP_KEYS), item) ||
+           addResult(uidToJumpKeys(item.uid, FILTERED_JUMP_KEYS, FILTERED_JUMP_KEYS), item))) {
       /* eslint-enable */
         items.splice(q, 1);
         q--;
@@ -1196,7 +1099,7 @@
     return Math.abs(hash);
   }
 
-  function handleScrollKey(ev) {
+function handleScrollKey(ev) {
     if (ev.key === BIG_SCROLL_KEY) {
       // Space to scroll down.  Shift+space to scroll up.
       withContainerToScroll((container) => {
@@ -1304,7 +1207,6 @@
   }
 
   function navigateToElement(ev, el, f) {
-    let scheduleRerender = false;
     let closeSidebar = true;
     if (matchingClass('rm-block-text')(el)) {
       const blockParent = el.parentElement;
@@ -1326,16 +1228,8 @@
       withUniqueTag(el, 'span',
           not(matchingClass(HINT_TYPED_CLASS)), clickFunc);
     } else if (matchingClass('bp3-icon-menu')(el)) {
-      // Hover to open sidebar
       mouseOver(el);
       closeSidebar = false;
-    } else if (matchingClass(
-        'bp3-icon-menu-open',
-        'bp3-icon-menu-closed')(el)) {
-      click(el);
-      // Sidebar toggling tip doesn't promptly update, so defer a
-      // couple re-renders.
-      scheduleRerender = true;
     /* Aborted attempt at opening links in new tab without switching to it
     } else if (el.attributes['href']) {
       if (ev.shiftKey || !IS_CHROME) {
@@ -1368,17 +1262,9 @@
     if (closeSidebar) {
       closeSidebarIfOpened();
     }
-    if (scheduleRerender) {
-      setTimeout(() => {
-        rerenderTips(false);
-      }, 50);
-      setTimeout(() => {
-        rerenderTips(false);
-      }, 100);
-    }
   }
 
-  function withContainerToScroll(f) {
+   function withContainerToScroll(f) {
     if (navigateKeysPressed.startsWith(SIDEBAR_BLOCK_PREFIX)) {
       withId('roam-right-sidebar-content', f);
     } else {
@@ -1429,9 +1315,8 @@
    * Recent history breadcrumbs
    */
 
-  // MUTABLE. Map from graph name to array of recently visited pages.
-  // Array elements are { title: "", hash: "", uid: "" }
-  const breadcrumbsByGraph = {};
+  // MUTABLE. Array of recently visited pages. { title: "", hash: "", uid: "" }
+  const breadcrumbs = [];
 
   // Class used for breadcrumbs container.
   const BREADCRUMBS_CLASS = 'roam_navigator_breadcrumbs';
@@ -1443,56 +1328,23 @@
   };
 
   // Regex used to extract id from hash portion of url.
-  const ID_FROM_HASH_REGEX = /#\/app\/[^\/]*\/page\/([a-zA-Z0-9\-_]*)$/;
+  const ID_FROM_HASH_REGEX = /#\/app\/[^\/]*\/page\/([a-zA-Z0-9\-]*)$/;
 
-  // Regex used to identify if the hash portion of the url is the
-  // daily page.
+  // Regex used to identify if the hash portion of the url is the daily page.
   const IS_DAILY_NOTES_REGEX = /#\/app\/[^\/]*$/;
-
-  // Regex used to identify if the hash portion of the url is the all
-  // pages page.
-  const IS_ALL_PAGES_REGEX = /#\/app\/[^\/]*\/search$/;
-
-  // Regex used to identify if the hash portion of the url is the
-  // graph overview page.
-  const IS_GRAPH_OVERVIEW_REGEX = /#\/app\/[^\/]*\/graph$/;
-
-  // Regex used to extract graph name
-  const GRAPH_NAME_REGEX = /#\/app\/([^\/]*)/;
-
-  const DAILY_NOTES_UID = 'daily_notes';
-  const GRAPH_OVERVIEW_UID = 'graph_overview';
-  const ALL_PAGES_UID = 'all_pages';
 
   function updateBreadcrumbs() {
     if (BREADCRUMBS_ENABLED) {
       const hash = window.location.hash;
-
-      const graphNameResult = GRAPH_NAME_REGEX.exec(hash);
-      let graphName = '';
-      if (graphNameResult) {
-        graphName = graphNameResult[1];
-      } else {
-        // Omit graphs chooser and other non-graph pages from
-        // breadcrumbs list.
-        debug('Omitting', hash, 'from breadcrumbs');
-      }
-      if (!(graphName in breadcrumbsByGraph)) {
-        breadcrumbsByGraph[graphName] = [];
-      }
-      const breadcrumbs = breadcrumbsByGraph[graphName];
-
       const pageTitleElement =
             document.querySelector('.roam-body-main .rm-title-display > span');
       const pageUidMatchResult = ID_FROM_HASH_REGEX.exec(hash);
       const isDailyPage = IS_DAILY_NOTES_REGEX.exec(hash) !== null;
-      const isGraphOverview = IS_GRAPH_OVERVIEW_REGEX.exec(hash) !== null;
-      const isAllPages = IS_ALL_PAGES_REGEX.exec(hash) !== null;
       let title;
       let uid;
       if (pageTitleElement) {
         title = pageTitleElement.innerText;
-      } else if (!isDailyPage && !isAllPages && !isGraphOverview) {
+      } else if (!isDailyPage) {
         if (!pageUidMatchResult) {
           // Fall back on using document title, this is used for cases
           // like the graph overview / all pages.
@@ -1504,14 +1356,8 @@
         }
       }
       if (isDailyPage) {
-        uid = DAILY_NOTES_UID;
+        uid = 'daily_notes';
         title = 'Daily Notes';
-      } else if (isGraphOverview) {
-        uid = GRAPH_OVERVIEW_UID;
-        title = 'Graph Overview';
-      } else if (isAllPages) {
-        uid = ALL_PAGES_UID;
-        title = 'All Pages';
       } else {
         if (pageUidMatchResult) {
           uid = pageUidMatchResult[1];
@@ -1544,7 +1390,7 @@
         changed = true;
       }
       if (changed) {
-        trimExcessBreadcrumbs(breadcrumbs);
+        trimExcessBreadcrumbs();
         debug('updated breadcrumbs = ', breadcrumbs);
       }
       // Update rendering of breadcrumbs.
@@ -1555,7 +1401,7 @@
         clearBreadcrumbs();
       } else if (changed || !alreadyVisible) {
         clearBreadcrumbs();
-        renderBreadcrumbs(breadcrumbs);
+        renderBreadcrumbs();
       }
     }
   }
@@ -1568,7 +1414,7 @@
     });
   }
 
-  function renderBreadcrumbs(breadcrumbs) {
+  function renderBreadcrumbs() {
     withDomMutation(() => {
       const container = div({'class': BREADCRUMBS_CLASS});
       for (let i = breadcrumbs.length - 2; i >= 0; i--) {
@@ -1590,8 +1436,7 @@
         container.appendChild(breadcrumbSpan);
       }
 
-      const topbar = selectUnique(document, '.roam-topbar > .rm-files-dropzone >  .flex-h-box');
-      if (topbar) {
+      withUnique(document, '.roam-topbar > .flex-h-box', (topbar) => {
         const buttonClasses = ['bp3-icon-menu', 'bp3-icon-menu-open'];
         const sidebarButton = getUniqueClass(topbar, buttonClasses);
         if (sidebarButton && sidebarButton.nextSibling) {
@@ -1599,11 +1444,11 @@
         } else {
           topbar.insertBefore(container, topbar.firstChild);
         }
-      }
+      });
     });
   }
 
-  function trimExcessBreadcrumbs(breadcrumbs) {
+  function trimExcessBreadcrumbs() {
     if (breadcrumbs.length > MAX_BREADCRUMB_COUNT) {
       breadcrumbs.splice(0, breadcrumbs.length - MAX_BREADCRUMB_COUNT);
     }
@@ -1753,12 +1598,12 @@
 
   // https://stackoverflow.com/a/41586311/1164871
   function getStack() {
-    try {
-      throw new Error();
-    } catch (e) {
-      return e.stack;
+      try {
+        // throw new Error();
+      } catch (e) {
+        // return e.stack;
+      }
     }
-  }
 
   // https://github.com/greasemonkey/greasemonkey/issues/2724#issuecomment-354005162
   function addCss(css) {
@@ -2067,8 +1912,7 @@
     '  font-weight: bold;',
     '  font-size: 14px;',
     '  color: rgb(145, 154, 159);',
-    // z-index of left sidebar is 999
-    '  z-index: 998;',
+    '  z-index: 2147483647;',
     '}',
     '.' + HINT_TYPED_CLASS + ' {',
     '  color: rgb(206, 217, 224);',
@@ -2083,7 +1927,11 @@
     '  position: relative;',
     '}',
     '#roam-right-sidebar-content .' + HINT_CLASS + ' {',
-    '  left: -24px;',
+    '  left: 0;',
+    '}',
+    '#right-sidebar > .flex-h-box > .' + HINT_CLASS + ' {',
+    '  position: initial;',
+    '  height: 0;',
     '}',
     '.rm-title-display .' + HINT_CLASS + ' {',
     '  margin-top: 14px;',
@@ -2100,7 +1948,7 @@
     '  display: inline;',
     '  margin-top: -14px;',
     '}',
-    '.' + BREADCRUMBS_CLASS + ' .' + HINT_CLASS + ' {',
+    '.' + BREADCRUMBS_CLASS + ' .' + LINK_HINT_CLASS + ' {',
     '  margin-top: -2px;',
     '  margin-left: 5px;',
     '}',
@@ -2126,35 +1974,6 @@
     '  text-overflow: ellipsis;',
     '  border-left: 0.5px solid #666;',
     '  padding-left: 5px;',
-    '}',
-    // Shows sidebar toggle
-    '.' + NAVIGATE_CLASS + ' .bp3-icon-menu-closed {',
-    '  opacity: initial !important;',
-    '}',
-    '.' + LEFT_SIDEBAR_TOGGLE_CLASS + ' {',
-    '  width: 0;',
-    '  height: 0;',
-    '  position: relative;',
-    '  top: -22px;',
-    '  left: 8px;',
-    '}',
-    '.roam-sidebar-content .' + LEFT_SIDEBAR_TOGGLE_CLASS + ' {',
-    '  left: 42px;',
-    '}',
-    // Fix positioning of sidebar close tip
-    '.' + RIGHT_SIDEBAR_CLOSE_CLASS + ' {',
-    '  position: relative;',
-    '  width: 0;',
-    '  height: 0;',
-    '  top: -16px;',
-    '  left: 0;',
-    '}',
-    '#roam-right-sidebar-content .' + SIDE_PAGE_CLOSE_CLASS + ' {',
-    '  position: relative;',
-    '  width: 0;',
-    '  height: 0;',
-    '  top: -16px !important;',
-    '  left: 4px !important;',
     '}',
   ].join('\n'));
 
