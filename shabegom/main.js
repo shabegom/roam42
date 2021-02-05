@@ -52,11 +52,11 @@ async function header(title) {
 }
 
 (() => {
-  roam42.shabegom = {};
-  roam42.shabegom.header = header;
-  roam42.shabegom.section = section;
-  roam42.shabegom.multiSection = multiSection;
-  roam42.shabegom.tab = tab;
-  roam42.shabegom.unTab = unTab;
-  roam42.shabegom.bibleVerses = bibleVerses;
+  shabegom = {};
+  shabegom.header = header;
+  shabegom.section = section;
+  shabegom.multiSection = multiSection;
+  shabegom.tab = tab;
+  shabegom.unTab = unTab;
+  shabegom.bibleVerses = bibleVerses;
 })();

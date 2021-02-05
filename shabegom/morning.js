@@ -1,33 +1,33 @@
 (() => {
   // MY MORNING PAGES
-  roam42.shabegom.morning = async () => {
+  shabegom.morning = async () => {
     // Data Fetching
     await roam42.help.displayMessage("Fetching Data", 2000);
 
     // Readwise Output
     try {
-      const readwise = await roam42.shabegom.fetchReadwise();
+      const readwise = await shabegom.fetchReadwise();
       await roam42.help.displayMessage("Readwise Fetched", 2000);
-      await roam42.shabegom.multiSection("#Readwise", readwise);
+      await shabegom.multiSection("#Readwise", readwise);
     } catch (e) {
       console.log("readwise failed");
     }
 
     // Moon
     try {
-      const moon = await roam42.shabegom.getMoon();
-      await roam42.shabegom.multiSection("Moon 🌝", [moon.phase, moon.url]);
+      const moon = await shabegom.getMoon();
+      await shabegom.multiSection("Moon 🌝", [moon.phase, moon.url]);
     } catch (e) {
       console.log("moon failed");
     }
 
     // Horoscope
     try {
-      const horoscope = await roam42.shabegom.horoscope();
+      const horoscope = await shabegom.horoscope();
       await roam42.help.displayMessage("Horoscope Fetched", 2000);
-      const pattern = await roam42.shabegom.pattern();
+      const pattern = await shabegom.pattern();
       await roam42.help.displayMessage("Pattern Fetched", 2000);
-      await roam42.shabegom.multiSection("#Horoscope 🐐", [
+      await shabegom.multiSection("#Horoscope 🐐", [
         `> ${horoscope.summary}`,
         `**Do:** ${horoscope.todo.join(", ")}`,
         `> ${pattern.summary}`
@@ -37,9 +37,9 @@
     }
     // Shakespeare
     try {
-      const shakespeare = await roam42.shabegom.shakespeare();
+      const shakespeare = await shabegom.shakespeare();
       await roam42.help.displayMessage("Shakespeare Fetched", 2000);
-      await roam42.shabegom.section("#Shakespeare", shakespeare);
+      await shabegom.section("#Shakespeare", shakespeare);
     } catch (e) {
       console.log("shakespeare failed");
     }
@@ -48,22 +48,22 @@
     const untetheredQuote = await roam42.common.getRandomBlockFromPage(
       "The Untethered Soul"
     );
-    await roam42.shabegom.section(
+    await shabegom.section(
       "[[The Untethered Soul]]",
       `> ((${untetheredQuote}))\n - [[Michael Singer]]`
     );
     try {
-      const stoic = await roam42.shabegom.stoic();
+      const stoic = await shabegom.stoic();
       await roam42.help.displayMessage("Stoic Fetched", 2000);
-      await roam42.shabegom.section("Stoic", stoic);
+      await shabegom.section("Stoic", stoic);
     } catch (e) {
       console.log("stoic failed");
     }
 
     try {
-      const buddha = await roam42.shabegom.quote("author", "gautama+buddha");
+      const buddha = await shabegom.quote("author", "gautama+buddha");
       await roam42.help.displayMessage("Buddha Fetched", 2000);
-      await roam42.shabegom.section(
+      await shabegom.section(
         "Buddha",
         `> ${buddha.quote} \n ${buddha.source} `
       );
@@ -72,43 +72,34 @@
     }
 
     try {
-      const quote = await roam42.shabegom.quote(
-        "title",
-        roam42.shabegom.word()
-      );
+      const quote = await shabegom.quote("title", shabegom.word());
       await roam42.help.displayMessage("Quote Fetched", 2000);
-      await roam42.shabegom.section(
-        "Quote",
-        `> ${quote.quote} \n ${quote.source} `
-      );
+      await shabegom.section("Quote", `> ${quote.quote} \n ${quote.source} `);
     } catch (e) {
       console.log("random quote failed");
     }
 
     // Religion
     try {
-      const religion = await roam42.shabegom.religion();
+      const religion = await shabegom.religion();
       await roam42.help.displayMessage("Religion Fetched", 2000);
-      await roam42.shabegom.bibleVerses(religion);
+      await shabegom.bibleVerses(religion);
     } catch (e) {
       console.log("religion failed");
     }
 
     // Wiki
     try {
-      const wiki = await roam42.shabegom.randomWiki();
+      const wiki = await shabegom.randomWiki();
       await roam42.help.displayMessage("Wiki Fetched", 2000);
       if (wiki.thumbnail) {
-        await roam42.shabegom.multiSection(wiki.title, [
+        await shabegom.multiSection(wiki.title, [
           wiki.thumbnail,
           wiki.excerpt,
           wiki.url
         ]);
       } else {
-        await roam42.shabegom.multiSection(wiki.title, [
-          wiki.excerpt,
-          wiki.url
-        ]);
+        await shabegom.multiSection(wiki.title, [wiki.excerpt, wiki.url]);
       }
     } catch (e) {
       console.log("wiki failed");
@@ -116,9 +107,9 @@
 
     // Poem
     try {
-      const poem = await roam42.shabegom.poem();
+      const poem = await shabegom.poem();
       await roam42.help.displayMessage("Poem Fetched", 2000);
-      await roam42.shabegom.section(poem.title, poem.poemContent);
+      await shabegom.section(poem.title, poem.poemContent);
     } catch (e) {
       console.log("poem failed");
     }
@@ -126,16 +117,16 @@
     // Read Later Link
     const ref = await roam42.smartBlocks.getRandomBlocksMention("readlater");
     const page = await roam42.common.getPageNamesFromBlockUidList([ref]);
-    await roam42.shabegom.multiSection("Read Me!", [
+    await shabegom.multiSection("Read Me!", [
       `[[${page[0][1].title}]]`,
       `{{next:42SmartBlock:Read Later}}`
     ]);
 
     // Pinboard
     try {
-      const pinboard = await roam42.shabegom.pinboard(1);
+      const pinboard = await shabegom.pinboard(1);
       await roam42.help.displayMessage("Pinboard Fetched", 2000);
-      await roam42.shabegom.header("#pinboard");
+      await shabegom.header("#pinboard");
       await roam42.smartBlocks.activeWorkflow.outputAdditionalBlock(
         pinboard[0].page
       );

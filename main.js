@@ -1,39 +1,35 @@
+const addElementToPage = (element, tagId, typeT) => {
+  try {
+    document.getElementById(tagId).remove();
+  } catch (e) {} //Delete any existing reference
+  if (disabledFeatures && disabledFeatures.indexOf(tagId) > -1) {
+    return;
+  } //Exit if disabled
+  Object.assign(element, { type: typeT, async: false, tagId: tagId });
+  document.getElementsByTagName("head")[0].appendChild(element);
+};
+const addScriptToPage = (tagId, script) => {
+  addElementToPage(
+    Object.assign(document.createElement("script"), { src: script }),
+    tagId,
+    "text/javascript"
+  );
+};
+(async () => {
+  window.shabegom = {};
 
-(() => {};)
-
-if (typeof window.roam42 == "undefined") {
-    // Load in custom Shabegom Stuff
-    setTimeout(() => {
-    roam42.loader.addScriptToPage("shabegom", `https://shabegom42.glitch.me/shabegom/main.js`);
-    roam42.loader.addScriptToPage("utils", `https://shabegom42.glitch.me/shabegom/utils.js`);
-    roam42.loader.addScriptToPage(
-      "randomWord",
-      `https://shabegom42.glitch.me/shabegom/randomWord.js`
-    );
-    roam42.loader.addScriptToPage(
-      "dataFetching",
-      `https://shabegom42.glitch.me/shabegom/dataFetching.js`
-    );
-    roam42.loader.addScriptToPage(
-      "morning",
-      `https://shabegom42.glitch.me/shabegom/morning.js`
-    );
-}, 2000)
-
-} else {
-    roam42.loader.addScriptToPage("shabegom", `https://shabegom42.glitch.me/shabegom/main.js`);
-    roam42.loader.addScriptToPage("utils", `https://shabegom42.glitch.me/shabegom/utils.js`);
-    roam42.loader.addScriptToPage(
-      "randomWord",
-      `https://shabegom42.glitch.me/shabegom/randomWord.js`
-    );
-    roam42.loader.addScriptToPage(
-      "dataFetching",
-      `https://shabegom42.glitch.me/shabegom/dataFetching.js`
-    );
-    roam42.loader.addScriptToPage(
-      "morning",
-      `https://shabegom42.glitch.me/shabegom/morning.js`
-    );
-
-}
+  addScriptToPage("shabegom", `https://shabegom42.glitch.me/shabegom/main.js`);
+  addScriptToPage("utils", `https://shabegom42.glitch.me/shabegom/utils.js`);
+  addScriptToPage(
+    "randomWord",
+    `https://shabegom42.glitch.me/shabegom/randomWord.js`
+  );
+  addScriptToPage(
+    "dataFetching",
+    `https://shabegom42.glitch.me/shabegom/dataFetching.js`
+  );
+  addScriptToPage(
+    "morning",
+    `https://shabegom42.glitch.me/shabegom/morning.js`
+  );
+})();
