@@ -1,4 +1,4 @@
-/* globals roam42, chrono,kbMapDateProcessing, setEmptyNodeValue, dayjs */
+/* globals roam42, chrono,kbMapDateProcessing, setEmptyNodeValue */
 
 // roam42.dailyNotesPopup
 (()=>{
