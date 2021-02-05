@@ -131,6 +131,21 @@
     },100);
   }
 
+
+  roam42.common.getArticleOfCurrentPage = ()=> {
+    var rootOfBlocks = document.getElementsByClassName("roam-log-page")[0];
+    var articleContent = null;
+      //first attempts to grab the content for the default home apge
+    if(rootOfBlocks) {
+       articleContent = rootOfBlocks.childNodes[1].getElementsByClassName('rm-block-text');
+    } else {
+      // if failed, try to attempt content for the current page (which has a different structure than default page)
+      rootOfBlocks = document.getElementsByClassName("roam-article")[0];
+      articleContent = rootOfBlocks.childNodes[0].getElementsByClassName('rm-block-text');
+    }
+    return articleContent;
+  }
+
   // updates an empty text area with a new value. This function does some additional work
   // because the textarea in roam is managed by React component, and it wasn't being triggered to
   // update when inserting a value
@@ -218,9 +233,9 @@
   };
 
   roam42.common.blockDelete = (block)=> {
-		var uid = block.id.substring(block.id.length-9,block.id.length);
-    if (block.localName == "textarea") 
-			setTimeout(async ()=>{ await roam42KeyboardLib.pressEsc().then(async () => await roam42KeyboardLib.pressBackspace()) },10)
+    if (block.localName == "textarea") {
+      roam42KeyboardLib.pressEsc().then(() => roam42KeyboardLib.pressBackspace())
+    }
   }
 
   roam42.common.blockInsertBelow = (block)=>{
