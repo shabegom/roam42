@@ -25,15 +25,19 @@
     try {
       const horoscope = await shabegom.horoscope();
       await roam42.help.displayMessage("Horoscope Fetched", 2000);
-      const pattern = await shabegom.pattern();
-      await roam42.help.displayMessage("Pattern Fetched", 2000);
       await shabegom.multiSection("#Horoscope 🐐", [
         `> ${horoscope.summary}`,
-        `**Do:** ${horoscope.todo.join(", ")}`,
-        `> ${pattern.summary}`
+        `**Do:** ${horoscope.todo.join(", ")}`
       ]);
     } catch (e) {
       console.log("horoscope failed");
+    }
+    try {
+      const pattern = await shabegom.pattern();
+      await roam42.help.displayMessage("Pattern Fetched", 2000);
+      await shabegom.section("#Pattern", `> ${pattern.summary}`);
+    } catch (e) {
+      console.log("pattern failed");
     }
     // Shakespeare
     try {
