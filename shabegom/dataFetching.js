@@ -63,4 +63,9 @@
     await fetch(
       `https://shabegom-roam-helpers.glitch.me/article?url=${url}`
     ).then(res => res.json());
+
+  shabegom.roamcult = async id =>
+    await fetch(
+      `https://shabegom-roam-helpers.glitch.me/roamcult?id=${id}`
+    ).then(res => res.json());
 })();
